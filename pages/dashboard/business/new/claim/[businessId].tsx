@@ -149,6 +149,9 @@ export default function ClaimPermitPage(props : Props) {
                         <Typography variant="h5" component="h1" align="center">
                             {new Date(form.submittedAt).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                         </Typography>
+                        <Button variant="outlined" startIcon={<DownloadDoneIcon />} sx={{ borderRadius: 50, mt: 3 }} onClick={() => handleViewSubmittedFile()}>
+                            View Business Permit
+                        </Button>
                     </Box>
                 ) : (
                     rejectedPayment ? (
@@ -199,9 +202,6 @@ export default function ClaimPermitPage(props : Props) {
                             <Typography variant="body1" component="h1" align="center" sx={{ maxWidth: 350 }}>
                                 Your new business is now registered. Please wait while we process your official business permit. The date and time when you can claim your business permit will shown here.
                             </Typography>
-                            <Button variant="outlined" startIcon={<DownloadDoneIcon />} sx={{ borderRadius: 50 }} onClick={() => handleViewSubmittedFile()}>
-                                View Business Permit
-                            </Button>
                         </Box>
                     )
                 )}
