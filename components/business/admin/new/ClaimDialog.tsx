@@ -93,7 +93,6 @@ export default function ClaimDialog(props: Props) {
                 variant="outlined"
                 component="label"
                 fullWidth
-                disabled={!certificateFile}
                 startIcon={certificateFile ? <DownloadDoneIcon /> : <UploadIcon />}
                 >
                     {certificateFile ? "Uploaded" : "Upload Certificate"}
