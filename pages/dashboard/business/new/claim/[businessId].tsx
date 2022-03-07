@@ -98,7 +98,7 @@ export default function ClaimPermitPage(props : Props) {
   }, [form])
 
   const handleViewSubmittedFile = () => {
-    window.open("https://firebasestorage.googleapis.com/v0/b/malabon-online-services.appspot.com/o/certificates%2FOther%20Files.pdf?alt=media&token=3d83b162-e314-4bfc-9265-ed5728c55354", "_blank");
+    window.open("https://firebasestorage.googleapis.com/v0/b/malabon-online-services.appspot.com/o/documents%2FJAT3wABsjlfm5s2xF88K01AoKV52%2FContract%20of%20Lease.pdf?alt=media&token=7ecfc746-fd0e-48e2-af00-a40e8021d085", "_blank");
     }
 
   return (
