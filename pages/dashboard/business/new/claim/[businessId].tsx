@@ -98,7 +98,7 @@ export default function ClaimPermitPage(props : Props) {
   }, [form])
 
   const handleViewSubmittedFile = () => {
-    if (form.certificateFile) window.open("https://firebasestorage.googleapis.com/v0/b/malabon-online-services.appspot.com/o/certificates%2FOther%20Files.pdf?alt=media&token=3d83b162-e314-4bfc-9265-ed5728c55354", "_blank");
+    window.open("https://firebasestorage.googleapis.com/v0/b/malabon-online-services.appspot.com/o/certificates%2FOther%20Files.pdf?alt=media&token=3d83b162-e314-4bfc-9265-ed5728c55354", "_blank");
     }
 
   return (
