@@ -296,6 +296,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const result = await apiGetRequest('/business/new/approve/forms', data.loggedInUser);
   const paymentForms = await apiGetRequest('/payments/business/verify', data.loggedInUser);
   const claimForms = await apiGetRequest('/business/new/applications/claim', data.loggedInUser);
+
+  if (result.status > 300 || claimForms.status > 300 || paymentForms.status > 300) {
+    return {
+      notFound: true
+    }
+  }
   
 
   return {

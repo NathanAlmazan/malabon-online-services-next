@@ -98,7 +98,7 @@ export default function ClaimPermitPage(props : Props) {
   }, [form])
 
   const handleViewSubmittedFile = () => {
-    if (form.certificateId) window.open(form.certificateId, "_blank");
+    if (form.certificateFile) window.open(form.certificateFile, "_blank");
     }
 
   return (
