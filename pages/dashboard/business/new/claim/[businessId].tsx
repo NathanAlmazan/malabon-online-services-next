@@ -11,6 +11,7 @@ import { apiGetRequest } from '../../../../../hocs/axiosRequests';
 import parseCookies from '../../../../../config/parseCookie';
 import Button from '@mui/material/Button';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import DownloadDoneIcon from '@mui/icons-material/DownloadDone';
 import { useRouter } from "next/router";
 
 const StepProgress = dynamic(() => import("../../../../../components/StepProgress"));
@@ -41,6 +42,7 @@ type BusinessRegistry = {
     rented: boolean;
     submittedAt: Date;
     certificateId: string | null;
+    certificateFile: string | null;
     approved: boolean;
     taxAmount: number | null;
     archived: boolean;
@@ -94,6 +96,10 @@ export default function ClaimPermitPage(props : Props) {
         setRejectedPayment(state => rejectedPayment);
     }
   }, [form])
+
+  const handleViewSubmittedFile = () => {
+    if (form.certificateFile) window.open(form.certificateFile, "_blank");
+    }
 
   return (
     <>
@@ -193,6 +199,9 @@ export default function ClaimPermitPage(props : Props) {
                             <Typography variant="body1" component="h1" align="center" sx={{ maxWidth: 350 }}>
                                 Your new business is now registered. Please wait while we process your official business permit. The date and time when you can claim your business permit will shown here.
                             </Typography>
+                            <Button variant="outlined" startIcon={<DownloadDoneIcon />} sx={{ borderRadius: 50 }} onClick={() => handleViewSubmittedFile()}>
+                                View Business Permit
+                            </Button>
                         </Box>
                     )
                 )}

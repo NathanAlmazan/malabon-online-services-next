@@ -14,7 +14,7 @@ import {
   Typography
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import CircularProgress from '@mui/material/LinearProgress';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useRouter } from "next/router";
 import dynamic from 'next/dynamic';
 
