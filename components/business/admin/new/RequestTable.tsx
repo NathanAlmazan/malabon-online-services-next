@@ -14,7 +14,7 @@ import {
   Typography
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
+import CircularProgress from '@mui/material/LinearProgress';
 import { useRouter } from "next/router";
 import dynamic from 'next/dynamic';
 
@@ -199,7 +199,7 @@ const RequestListResults = (props: Props) => {
                     {new Date(form.submittedAt).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
                   </TableCell>
                   <TableCell>
-                    <LinearProgress value={(form.approvals.length / 6) * 100} variant="determinate" />
+                    <CircularProgress value={(form.approvals.length / 6) * 100} variant="determinate" />
                   </TableCell>
                 </TableRow>
               )})}

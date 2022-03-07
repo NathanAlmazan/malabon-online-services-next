@@ -12,7 +12,7 @@ import {
   TableRow,
   Avatar,
   Typography,
-  LinearProgress 
+  CircularProgress  
 } from '@mui/material';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import { SeverityPill } from './SeverityPill';
@@ -138,7 +138,7 @@ const LatestRequest = ({ forms, viewAll }: Props) => (
                     {new Date(form.submittedAt).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
                   </TableCell>
                   <TableCell>
-                    <LinearProgress value={(form.approvals.length / 6) * 100} variant="determinate" />
+                    <CircularProgress value={(form.approvals.length / 6) * 100} variant="determinate" />
                   </TableCell>
                 </TableRow>
               )})}

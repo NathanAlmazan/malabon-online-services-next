@@ -74,16 +74,8 @@ interface Props {
         TIN: string;
         owners: BusinessOwners[];
         approvals: BusinessApproval[];
-      }[], 
-      progress: number,
-      forAssess: number;
+      }[]
     }
-}
-
-interface ManageAccount {
-  assessed: number;
-  forAssess: number;
-  image?: string;
 }
 
 export default function AdminDashboard(props: Props) {
@@ -94,8 +86,6 @@ export default function AdminDashboard(props: Props) {
   const handleRedirect = (path: string) => {
     router.push(path);
   }
-
-  console.log(props.newBusiness.progress);
 
   return (
     <>
@@ -171,7 +161,7 @@ export default function AdminDashboard(props: Props) {
             xs={12}
           >
             <TasksProgress 
-              value={(newBusiness.progress / newBusiness.forms.length) * 100}
+              value={42}
             />
           </Grid>
           <Grid
@@ -209,7 +199,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const result = await apiGetRequest('/accounts/admin/search', data.loggedInUser);
   const forms = await apiGetRequest('/business/new/approve/forms', data.loggedInUser);
-  const account = await apiGetRequest('/accounts/manage/' + (result.data as AdminAccount).adminAccount.email, data.loggedInUser);
 
   if (result.status > 300) {
     return {
@@ -220,16 +209,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
   }
 
-  console.log(account);
-
   return {
     props: {
       accessToken: data.loggedInUser,
       account: result.data,
       newBusiness: {
         forms: forms.data,
-        progress: (account.data as ManageAccount).assessed,
-        forAssessment: (account.data as ManageAccount).forAssess
       }
     }
   }
