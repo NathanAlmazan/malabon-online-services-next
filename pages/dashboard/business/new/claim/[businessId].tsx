@@ -98,7 +98,7 @@ export default function ClaimPermitPage(props : Props) {
   }, [form])
 
   const handleViewSubmittedFile = () => {
-    if (form.certificateFile) window.open(form.certificateFile, "_blank");
+    if (form.certificateId) window.open(form.certificateId, "_blank");
     }
 
   return (
@@ -137,12 +137,6 @@ export default function ClaimPermitPage(props : Props) {
                             width={400}
                             height={400}
                         />
-                        <Typography variant="h4" component="h1" color="primary">
-                            {form.certificateId && form.certificateId}
-                        </Typography>
-                        <Typography variant="body1" component="h1" align="center" sx={{ mb: 2 }}>
-                            Your New Business ID
-                        </Typography>
                         <Typography variant="body1" component="h1" align="center" sx={{ maxWidth: 350 }}>
                             You can now claim your business permit on
                         </Typography>

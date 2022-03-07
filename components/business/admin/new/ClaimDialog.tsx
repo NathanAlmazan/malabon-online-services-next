@@ -53,7 +53,7 @@ export default function ClaimDialog(props: Props) {
             const body = JSON.stringify({
                 businessId: businessId,
                 schedule: value.toISOString(),
-                certificateId: certificateId,
+                certificateId: certificate,
                 certificateFile: certificate
             })
 
