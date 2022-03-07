@@ -199,7 +199,7 @@ const RequestListResults = (props: Props) => {
                     {new Date(form.submittedAt).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
                   </TableCell>
                   <TableCell>
-                    <CircularProgress value={(form.approvals.length / 6) * 100} variant="determinate" />
+                    <CircularProgress value={(form.approvals.length / 6) * 100} variant="determinate" color="primary" />
                   </TableCell>
                 </TableRow>
               )})}

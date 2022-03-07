@@ -192,7 +192,7 @@ const PaymentTable = (props: Props) => {
                     {new Date(form.submittedAt).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
                   </TableCell>
                   <TableCell>
-                    <LinearProgress value={(form.approvals.length / 6) * 100} variant="determinate" />
+                    <LinearProgress value={(form.approvals.length / 6) * 100} variant="determinate" color="primary" />
                   </TableCell>
                 </TableRow>
               )})}
