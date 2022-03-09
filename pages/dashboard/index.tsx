@@ -34,16 +34,17 @@ const malabonServices = [
 ];
 
 function Copyright() {
+  const theme = useTheme();
   return (
-      <footer>
-          <Typography variant="body2" color="text.secondary" align="center" sx={{ m: 7 }}>
-              {'Copyright © '}
-              CITY GOVERNMENT OF MALABON
-              {' '}
-              {new Date().getFullYear()}
-              {'.'}
-          </Typography>
-      </footer>
+    <footer>
+      <Typography variant="body2" color="text.secondary" align="center" sx={{ m: 7 }}>
+          {'Copyright © '}
+          CITY GOVERNMENT OF MALABON
+          {' '}
+          {new Date().getFullYear()}
+          {'.'}
+      </Typography>
+  </footer>
   );
 }
 
@@ -63,26 +64,45 @@ export default function Dashboard(props: Props) {
   const theme = useTheme();
 
   return (
-      <Container>
-        <Box sx={{ mt: 5, mb: 5 }}>
-          <Typography component="h1" variant="h5" textAlign="left">
-            Good Day, <strong style={{ color: theme.palette.primary.main }}>{account && capitalCase(account.account.firstName + ' ' + account.account.lastName)}</strong>
-          </Typography>
-          <Typography component="p" variant="body1" textAlign="left" sx={{ color: theme.palette.primary.dark }}>
-            How can we help you?
-          </Typography>
+      <>
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'end',
+          justifyContent: 'flex-start',
+          wisth: '100vw',
+          height: 400,
+          backgroundImage: 'url("/covers/city_hall.png")',
+          backgroundRepeat: 'no-repeat',
+          background: 'linear-gradient(0deg, rgba(255, 0, 150, ), rgba(255, 0, 150, 0.5))',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed'
+        }}>
+            <Box sx={{ ml: 5, pb: 3 }}>
+              <Typography variant="h5" sx={{ color: theme.palette.primary.dark }}>
+                Welcome to
+              </Typography>
+              <Typography variant="h3" align="center" sx={{ color: theme.palette.primary.main }}>
+                Malabon City Online Services
+              </Typography>
+            </Box>
         </Box>
-        <Grid container spacing={2}>
-            {malabonServices.map(service => (
-                <Grid item xs={12} sm={6} md={4} key={service.title} >
-                    <ServiceCard details={service} />
-                </Grid>
-            ))}
-        </Grid>
-
+        <Container maxWidth="lg">
+          <Box sx={{ mt: 8, mb: 5 }}>
+            <Typography component="p" variant="h5" textAlign="center" sx={{ color: theme.palette.primary.dark }}>
+              How can we help you today, <strong style={{ color: theme.palette.primary.main }}>{account && capitalCase(account.account.firstName + ' ' + account.account.lastName)}</strong>?
+            </Typography>
+          </Box>
+          <Grid container spacing={2}>
+              {malabonServices.map(service => (
+                  <Grid item xs={12} sm={6} md={4} key={service.title} >
+                      <ServiceCard details={service} />
+                  </Grid>
+              ))}
+          </Grid>
+        </Container>
         <Copyright />
-
-      </Container>
+      </>
   );
 }
 
