@@ -2,6 +2,7 @@ import React from 'react';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
+import Head from 'next/head';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
@@ -65,6 +66,11 @@ export default function Dashboard(props: Props) {
 
   return (
       <>
+       <Head>
+          <title>
+              Home | Malabon City Online Services
+          </title>
+        </Head>
         <Box sx={{
           display: 'flex',
           alignItems: 'end',

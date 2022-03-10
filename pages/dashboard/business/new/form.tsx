@@ -420,6 +420,8 @@ export default function RegistrationForm({ accessToken, zoning, lineOfBusiness, 
                 postalCode: parseInt(businessAddress.postalCode as string),
                 province: businessAddress.province,
                 mainOffice: businessAddress.mainOffice,
+                latitude: zoning.location.lat, 
+                longitude: zoning.location.lng
             },
             owner: businessOwner as BusinessOwners,
             quarterPayment: false,
