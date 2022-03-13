@@ -68,16 +68,12 @@ interface Props {
 export default function ClaimPermitPage(props : Props) {
   const { accessToken, renewId, form } = props;
   const router = useRouter();
-  const [appointment, setAppointment] = useState<Date>(new Date());
   const [rejectedPayment, setRejectedPayment] = useState<BusinessPayments>();
 
   useEffect(() => {
-    const appointment = new Date(form.appointment);
     const rejectedPayment = form.payments.find(payment => payment.rejected);
 
-    if (appointment) {
-        setAppointment(state => appointment);
-    } else if (rejectedPayment) {
+    if (rejectedPayment) {
         setRejectedPayment(state => rejectedPayment);
     }
   }, [form])
@@ -104,7 +100,7 @@ export default function ClaimPermitPage(props : Props) {
                         Claim Business Permit
                     </Typography>
                 </Box>
-                {appointment ? (
+                {form.appointment ? (
                     <Box sx={{
                         width: '100%',
                         display: 'flex',

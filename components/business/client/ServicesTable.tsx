@@ -22,8 +22,8 @@ interface Props {
     removeService: (value: BusinessServices) => void;
     editable: boolean;
     lineOfBusiness: BusinessTypes[];
-    zoningType: string;
-    zoningId: number;
+    zoningType?: string;
+    zoningId?: number;
 }
 
 type BusinessDetails = {
@@ -52,11 +52,13 @@ function ServicesTable(props: Props) {
   }
 
   useEffect(() => {
-    setSelectedBusiness(state => ({
-      typeName: zoningType,
-      typeId: zoningId,
-      zoneId: 1
-    }));
+    if (zoningType && zoningId) {
+      setSelectedBusiness(state => ({
+        typeName: zoningType,
+        typeId: zoningId,
+        zoneId: 1
+      }));
+    }
     
   }, [zoningType, zoningId])
   
