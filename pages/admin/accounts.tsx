@@ -52,12 +52,16 @@ function getTitle(role: string) {
       return "Market Clearance";
     case "BFP":
       return "Fire Safety Inspection Certificate";
+    case "TRSY": 
+      return "Treasury";
+    case "BPLO": 
+      return "Release"
     default:
       return "Zoning Clearance";
   }
 }
 
-const clearance = ["PZO", "OLBO", "CHO", "CENRO", "OCMA", "BFP"];
+const clearance = ["PZO", "OLBO", "CHO", "CENRO", "OCMA", "BFP", "TRSY", "BPLO"];
 
 export default function AdminAccount() {
   const { currentUser } = useAuth();
@@ -185,15 +189,7 @@ export default function AdminAccount() {
           />
         </Grid>
         <Grid item xs={12} md={8}>
-          <Grid container spacing={2} sx={{mb: 5  }}>
-            <Grid item xs={12} md={5}>
-              <Productivity value={userInfo ? userInfo.forAssess : 0} />
-            </Grid>
-            <Grid item xs={12} md={5}>
-              <Assessed value={userInfo ? userInfo.assessed : 0} />
-            </Grid>
-          </Grid>
-          <Typography component="h1" fontWeight="bold" color="secondary" variant="h6" textAlign="left" sx={{ mb: 2 }}>
+          <Typography component="h1" fontWeight="bold" color="secondary" variant="h5" textAlign="left" sx={{ mb: 2 }}>
             User Roles
           </Typography>
           <Grid container spacing={2} justifyContent="flex-end">
@@ -202,7 +198,7 @@ export default function AdminAccount() {
                 <FormControlLabel control={<Checkbox checked={userRoles.includes(role)} onClick={(event) => handleCheck(event, role)} disabled={!userInfo} />} label={getTitle(role)} />
             </Grid>
             ))}
-            <Grid item xs={6} md={4}>
+            <Grid item xs={6} md={5}>
               {userInfo?.adminAccount.superuser ? (
               <Button
                 variant="outlined"

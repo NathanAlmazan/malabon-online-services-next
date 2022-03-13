@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -10,8 +10,13 @@ import { GetServerSideProps } from 'next';
 import parseCookies from '../../config/parseCookie';
 import { apiGetRequest } from '../../hocs/axiosRequests';
 import { capitalCase } from "change-case";
+import { useRouter } from 'next/router';
+import { BusinessRegistry } from './business/new/assessment/[businessId]';
 
 const ServiceCard = dynamic(() => import('../../components/dashboard/ServiceCard'));
+const NewBusinessDialog = dynamic(() => import('../../components/dashboard/newBusinessDialog'));
+const RenewalDialog = dynamic(() => import('../../components/dashboard/renewalDialog'));
+const BusinessRenewDialog = dynamic(() => import('../../components/business/client/renew/RenewDialog'));
 
 const malabonServices = [
   {
@@ -35,7 +40,6 @@ const malabonServices = [
 ];
 
 function Copyright() {
-  const theme = useTheme();
   return (
     <footer>
       <Typography variant="body2" color="text.secondary" align="center" sx={{ m: 7 }}>
@@ -50,19 +54,42 @@ function Copyright() {
 }
 
 interface Props {
+  ownedBusinesses: BusinessRegistry[];
   accessToken: string;
   account: {
       account: {
           userId: number;
           firstName: string;
           lastName: string;
+          uid: string;
       }
   }
 }
 
 export default function Dashboard(props: Props) {
-  const { account } = props;
+  const { account, ownedBusinesses, accessToken } = props;
   const theme = useTheme();
+  const router = useRouter();
+  const [openNewBusiness, setOpenNewBusiness] = useState<boolean>(false);
+  const [openRenewal, setOpenrenewal] = useState<boolean>(false);
+  const [renewDialog, setrenewDialog] = useState<boolean>(false);
+
+  const openDialog = (dialog: string) => {
+    if (dialog == "Online New Business Registration") {
+      setOpenNewBusiness(true);
+    } else if (dialog == "Online Renewal of Business Permit") {
+      setOpenrenewal(true);
+    }
+  }
+
+  const proceedToPage = (path: string) => {
+    router.push(path);
+  }
+
+  const proceedRenew = () => {
+    setOpenrenewal(false);
+    setrenewDialog(true);
+  }
 
   return (
       <>
@@ -102,11 +129,14 @@ export default function Dashboard(props: Props) {
           <Grid container spacing={2}>
               {malabonServices.map(service => (
                   <Grid item xs={12} sm={6} md={4} key={service.title} >
-                      <ServiceCard details={service} />
+                      <ServiceCard details={service} openDialog={openDialog} />
                   </Grid>
               ))}
           </Grid>
         </Container>
+        <NewBusinessDialog open={openNewBusiness} handleClose={() => setOpenNewBusiness(false)} proceed={proceedToPage} />
+        <RenewalDialog open={openRenewal} handleClose={() => setOpenrenewal(false)} proceed={proceedRenew} />
+        <BusinessRenewDialog open={renewDialog} handleClose={() => setrenewDialog(false)} businesses={ownedBusinesses} accessToken={accessToken} uid={account.account.uid} />
         <Copyright />
       </>
   );
@@ -148,11 +178,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   const userAccount = await apiGetRequest('/accounts/search', data.loggedInUser);
+  const ownedBusinesses = await apiGetRequest('/business/renew/owned', data.loggedInUser);
 
   return {
     props: {
       accessToken: data.loggedInUser,
-      account: userAccount.data
+      account: userAccount.data,
+      ownedBusinesses: ownedBusinesses.data
     }
   }
 }

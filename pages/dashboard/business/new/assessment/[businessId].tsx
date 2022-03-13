@@ -16,7 +16,8 @@ const StepProgress = dynamic(() => import("../../../../../components/StepProgres
 const AssessmentProgress = dynamic(() => import("../../../../../components/business/client/assessments"));
 const Copyright = dynamic(() => import("../../../../../components/Copyright"));
 
-type BusinessRegistry = {
+export type BusinessRegistry = {
+    businessId: number;
     registrationNumber: string;
     TIN: string;
     businessName: string;

@@ -16,6 +16,7 @@ const NewBusinessStats = dynamic(() => import("../../components/dashboard/NewBus
 const TotalCustomers = dynamic(() => import("../../components/dashboard/Customers"));
 const TasksProgress = dynamic(() => import("../../components/dashboard/Progress"));
 const LatestRequest = dynamic(() => import("../../components/dashboard/LatestRequest"));
+const RenewRequest = dynamic(() => import("../../components/dashboard/RenewRequest"));
 const Copyright = dynamic(() => import("../../components/Copyright"));
 
 type BusinessApproval = {
@@ -75,17 +76,36 @@ interface Props {
         owners: BusinessOwners[];
         approvals: BusinessApproval[];
       }[]
+    },
+    renewForms: {
+      forms: {
+        business: {
+          businessId: number;
+          businessName: string;
+          TIN: string;
+          certificateId: string;
+        },
+        renewalId: number;
+        businessId: number | null;
+        permitNumber: string | null;
+        receiptNumber: string | null;
+        renewAt: Date;
+        completed: boolean;
+        businessName: string | null;
+      }[];
     }
 }
 
 export default function AdminDashboard(props: Props) {
-  const { account, newBusiness } = props;
+  const { account, newBusiness, renewForms } = props;
   const theme = useTheme();
   const router = useRouter();
 
   const handleRedirect = (path: string) => {
     router.push(path);
   }
+
+  console.log(renewForms.forms);
 
   return (
     <>
@@ -176,6 +196,18 @@ export default function AdminDashboard(props: Props) {
               viewAll={() => handleRedirect('/admin/business/register')}
             />
           </Grid>
+          <Grid
+            item
+            xl={12}
+            lg={12}
+            sm={12}
+            xs={12}
+          >
+            <RenewRequest 
+              forms={renewForms.forms}
+              viewAll={() => handleRedirect('/admin/business/renew')}
+            />
+          </Grid>
         </Grid>
         <Copyright />
     </Container>
@@ -199,6 +231,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const result = await apiGetRequest('/accounts/admin/search', data.loggedInUser);
   const forms = await apiGetRequest('/business/new/approve/forms', data.loggedInUser);
+  const renewForms = await apiGetRequest('/business/renew/requests', data.loggedInUser);
 
   if (result.status > 300) {
     return {
@@ -215,6 +248,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       account: result.data,
       newBusiness: {
         forms: forms.data,
+      },
+      renewForms: {
+        forms: renewForms.data
       }
     }
   }

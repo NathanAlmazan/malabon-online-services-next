@@ -17,6 +17,7 @@ import { apiGetRequest } from '../../hocs/axiosRequests';
 
 const EnhancedTableToolbar = dynamic(() => import("../../components/dashboard/applications/ApplicationToolbar"));
 const ApplicationRow = dynamic(() => import("../../components/dashboard/applications/ApplicationRow"));
+const RenewRow = dynamic(() => import("../../components/dashboard/applications/RenewRow"));
 const Copyright = dynamic(() => import("../../components/Copyright"));
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -66,14 +67,34 @@ type RowApproval = {
   }
 }
 
+type RenewData = {
+    business: {
+      businessId: number;
+      businessName: string;
+      TIN: string;
+      certificateId: string;
+    },
+    renewalId: number;
+    businessId: number | null;
+    permitNumber: string | null;
+    receiptNumber: string;
+    receiptFile: string | null;
+    renewAt: Date;
+    completed: boolean;
+    businessName: string | null;
+    topFile: string | null;
+}
+
+
 type Filter = "assessment" | "approved" | "disapproved" | "release" | "all";
 
 interface Props {
   accessToken: string;
   applications: RowData[];
+  renew: RenewData[];
 }
 
-export default function UserApplications({ accessToken, applications }: Props) {
+export default function UserApplications({ accessToken, applications, renew }: Props) {
   const [filteredList, setFilteredList] = React.useState<RowData[]>([]);
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
@@ -135,6 +156,7 @@ export default function UserApplications({ accessToken, applications }: Props) {
   }
 
   const isSelected = (name: string) => selected.indexOf(name) !== -1;
+  console.log(renew);
 
   return (
     <>
@@ -187,6 +209,20 @@ export default function UserApplications({ accessToken, applications }: Props) {
                               />
                             );
                         })}
+                        {renew.map((business, index) => {
+                          const isItemSelected = isSelected(business.renewalId.toString());
+                          const labelId = `enhanced-table-checkbox-${index}`;
+
+                          return (
+                            <RenewRow 
+                              key={business.renewalId}
+                              handleClick={handleClick}
+                              isItemSelected={isItemSelected}
+                              labelId={labelId}
+                              row={business}
+                            />
+                          )
+                        })}
                          {emptyRows > 0 && (
                           <TableRow
                             style={{
@@ -224,6 +260,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   const result = await apiGetRequest('/business/new/applications', data.loggedInUser);
+  const renew = await apiGetRequest('/business/renew/myRequests', data.loggedInUser);
 
   if (result.status > 300) {
     return {
@@ -234,7 +271,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       accessToken: data.loggedInUser,
-      applications: result.data
+      applications: result.data,
+      renew: renew.data
     }
   }
 }

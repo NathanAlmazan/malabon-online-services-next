@@ -5,9 +5,9 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { useRouter } from 'next/router';
 
 interface Props {
+  openDialog: (value: string) => void;
   details: {
     title: string;
     image: string;
@@ -16,13 +16,8 @@ interface Props {
   }
 }
 
-export default function ServiceCard({ details }: Props) {
-  const router = useRouter();
+export default function ServiceCard({ details, openDialog }: Props) {
 
-  const handleApply = () => {
-    router.push(details.applyLink)
-  }
-  
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardMedia
@@ -40,7 +35,7 @@ export default function ServiceCard({ details }: Props) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small" onClick={handleApply}>Apply Now</Button>
+        <Button size="small" onClick={() => openDialog(details.title)}>Apply Now</Button>
         <Button size="small">Learn More</Button>
       </CardActions>
     </Card>

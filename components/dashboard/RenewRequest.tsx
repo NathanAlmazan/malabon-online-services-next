@@ -1,4 +1,3 @@
-import { format } from 'date-fns';
 import {
   Box,
   Button,
@@ -10,60 +9,30 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Avatar,
   Typography,
   CircularProgress  
 } from '@mui/material';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import Image from 'next/image';
-import { SeverityPill } from './SeverityPill';
-
-type BusinessApproval = {
-  approvalId: number;
-  businessId: number;
-  approved: boolean;
-  approvalType: string;
-  approvedAt: Date;
-  officialId: number;
-  remarks: string | null;
-  trackNumber: number | null;
-  required: boolean;
-  approvalFee: number | null;
-}
-
-type BusinessOwners = {
-  ownerId: number;
-  surname: string;
-  givenName: string;
-  middleName: string;
-  suffix: string | null;
-  owner: boolean;
-  citizenship: string | null;
-  gender: string;
-}
-
-type BusinessAdresses = {
-  addressId: number;
-  bldgNumber: string;
-  street: string;
-  barangay: string;
-  city: string;
-  province: string;
-  postalCode: number;
-  mainOffice: boolean;
-}
+import CircularProgressWithLabel from "../StyledCircularProgress";
 
 interface Props {
   viewAll: () => void;
   forms: {
-    businessId: number;
-    businessName: string;
-    submittedAt: Date;
-    addresses: BusinessAdresses[];
-    TIN: string;
-    owners: BusinessOwners[];
-    approvals: BusinessApproval[];
-  }[]
+    business: {
+      businessId: number;
+      businessName: string;
+      TIN: string;
+      certificateId: string;
+    },
+    renewalId: number;
+    businessId: number | null;
+    permitNumber: string | null;
+    receiptNumber: string | null;
+    renewAt: Date;
+    completed: boolean;
+    businessName: string | null;
+  }[];
 }
 
 const getInitials = (name = '') => name
@@ -75,22 +44,22 @@ const getInitials = (name = '') => name
 
 const LatestRequest = ({ forms, viewAll }: Props) => (
   <Card>
-    <CardHeader title="New Business Requests" />
+    <CardHeader title="Renew Business Requests" />
     <TableContainer>
           <Table sx={{ minWidth: 1050 }}>
             <TableHead>
               <TableRow>
                 <TableCell>
+                    {"Mayor's Permit Number"}
+                </TableCell>
+                <TableCell>
+                    Last Receipt Number
+                </TableCell>
+                <TableCell>
                   Business Name
                 </TableCell>
                 <TableCell>
-                 Tax Identification Number
-                </TableCell>
-                <TableCell>
-                  Location
-                </TableCell>
-                <TableCell>
-                  Registration Date
+                  Renewal Date
                 </TableCell>
                 <TableCell>
                   Status
@@ -99,12 +68,10 @@ const LatestRequest = ({ forms, viewAll }: Props) => (
             </TableHead>
             <TableBody>
               {forms.slice(0, 5).map((form) => {
-                const businessLocation = form.addresses.find(address => !address.mainOffice);
-                const location = businessLocation ? businessLocation.bldgNumber + ' ' + businessLocation.street + ' ' + businessLocation.barangay : '';
 
                 return (
                 <TableRow
-                  key={form.businessId}
+                  key={form.renewalId}
                 >
                   <TableCell>
                     <Box
@@ -113,30 +80,25 @@ const LatestRequest = ({ forms, viewAll }: Props) => (
                         display: 'flex'
                       }}
                     >
-                      <Avatar
-                        sx={{ mr: 2, bgcolor: '#E91E63' }}
-                      >
-                        {form.businessName}
-                      </Avatar>
                       <Typography
                         color="textPrimary"
                         variant="body1"
                       >
-                        {form.businessName}
+                        {form.permitNumber ? form.permitNumber : form.business.certificateId}
                       </Typography>
                     </Box>
                   </TableCell>
                   <TableCell>
-                    {form.TIN}
+                    {form.receiptNumber}
                   </TableCell>
                   <TableCell>
-                    {location}
+                    {form.business ? form.business.businessName : form.businessName}
                   </TableCell>
                   <TableCell>
-                    {new Date(form.submittedAt).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
+                    {new Date(form.renewAt).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
                   </TableCell>
                   <TableCell>
-                    <CircularProgress value={(form.approvals.length / 6) * 100} variant="determinate" color="primary" />
+                    <CircularProgressWithLabel value={80} />
                   </TableCell>
                 </TableRow>
               )})}

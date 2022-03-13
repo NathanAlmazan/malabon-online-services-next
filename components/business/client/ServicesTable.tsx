@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -22,6 +22,8 @@ interface Props {
     removeService: (value: BusinessServices) => void;
     editable: boolean;
     lineOfBusiness: BusinessTypes[];
+    zoningType: string;
+    zoningId: number;
 }
 
 type BusinessDetails = {
@@ -34,7 +36,7 @@ function useForceUpdate(){
 }
 
 function ServicesTable(props: Props) {
-  const { services, editable, lineOfBusiness, addSerrvice, removeService } = props;
+  const { services, editable, lineOfBusiness, zoningType, zoningId, addSerrvice, removeService } = props;
   const theme = useTheme();
   const forceUpdate = useForceUpdate();
   const [open, setOpen] = useState<boolean>(false);
@@ -48,6 +50,15 @@ function ServicesTable(props: Props) {
   const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setBusinessDetails({ ...businessDetails, [event.target.name]: event.target.value });
   }
+
+  useEffect(() => {
+    setSelectedBusiness(state => ({
+      typeName: zoningType,
+      typeId: zoningId,
+      zoneId: 1
+    }));
+    
+  }, [zoningType, zoningId])
   
   const handleSelectBusiness = (business: BusinessTypes) => {
     setSelectedBusiness(business);

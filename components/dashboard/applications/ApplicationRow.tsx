@@ -14,6 +14,8 @@ import DraftsIcon from '@mui/icons-material/Drafts';
 import Stack from '@mui/material/Stack';
 import { useRouter } from "next/router";
 import GradingIcon from '@mui/icons-material/Grading';
+import { SeverityPill } from "../../dashboard/SeverityPill";
+
 
 type RowData = {
   businessId: number;
@@ -105,12 +107,14 @@ function ApplicationRow(props: Props) {
                   </Typography>
             </TableCell>
             <TableCell>
-              <Typography variant="body1" sx={{ fontWeight: 400 }}>
-                {"New Business"}
-              </Typography>
+              <SeverityPill color='success'>
+                <Typography variant="body1">
+                  New
+                </Typography>
+              </SeverityPill>
             </TableCell>
             <TableCell>
-              <Typography variant="subtitle2" sx={{ fontWeight: 400, color: 'secondary.main', fontStyle: 'italic', maxWidth: 500 }} noWrap>
+              <Typography variant="subtitle2" sx={{ fontWeight: 400, color: 'secondary.main', fontStyle: 'italic', maxWidth: 300 }} noWrap>
                 {getMessage(row.approvals.length)}
               </Typography>
             </TableCell>

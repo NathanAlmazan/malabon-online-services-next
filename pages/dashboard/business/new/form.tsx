@@ -226,17 +226,6 @@ export default function RegistrationForm({ accessToken, zoning, lineOfBusiness, 
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        let initialService: BusinessServices[] = [];
-        initialService.push({
-            businessType: { typeName: zoning.business.typeName },
-            businessTypeId: zoning.business.typeId,
-            productService: '',
-            psicCode: ''
-        })
-        setBusinessServices(state => initialService);
-    }, [zoning])
-
-    useEffect(() => {
         const zoneAddress = zoning.location.address.split(', ');
         const slicedDetails = zoneAddress[0].split(" ");
         let street = '';
@@ -579,6 +568,9 @@ export default function RegistrationForm({ accessToken, zoning, lineOfBusiness, 
                                 removeService={handleRemoveService}
                                 editable={editable}
                                 lineOfBusiness={lineOfBusiness.businessTypes}
+                                zoningType={zoning.business.typeName}
+                                zoningId={zoning.business.typeId}
+
                             />
 
                             <DocumentReqs 
