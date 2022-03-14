@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import Image from 'next/image';
-import CircularProgressWithLabel from "../StyledCircularProgress";
+import { SeverityPill } from './SeverityPill';
 
 interface Props {
   viewAll: () => void;
@@ -32,6 +32,7 @@ interface Props {
     renewAt: Date;
     completed: boolean;
     businessName: string | null;
+    certificateFile: string | null;
   }[];
 }
 
@@ -98,7 +99,9 @@ const LatestRequest = ({ forms, viewAll }: Props) => (
                     {new Date(form.renewAt).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
                   </TableCell>
                   <TableCell>
-                    <CircularProgressWithLabel value={80} />
+                    <SeverityPill color={form.certificateFile ? 'success' : 'warning'}>
+                      {form.certificateFile ? 'Release' : 'On Going'}
+                    </SeverityPill>
                   </TableCell>
                 </TableRow>
               )})}

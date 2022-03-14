@@ -64,7 +64,6 @@ function DrawerLayout({ open, toggleDrawer }: Props) {
           <Sidebar />
         </List>
         <Divider />
-        <List>{secondaryListItems}</List>
     </Drawer>
   );
 }

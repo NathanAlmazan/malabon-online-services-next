@@ -92,6 +92,7 @@ interface Props {
         renewAt: Date;
         completed: boolean;
         businessName: string | null;
+        certificateFile: string | null;
       }[];
     }
 }

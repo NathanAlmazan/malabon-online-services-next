@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import Image from 'next/image';
-import { SeverityPill } from './SeverityPill';
+import CircularProgressWithLabel from "../StyledCircularProgress";
 
 type BusinessApproval = {
   approvalId: number;
@@ -116,7 +116,7 @@ const LatestRequest = ({ forms, viewAll }: Props) => (
                       <Avatar
                         sx={{ mr: 2, bgcolor: '#E91E63' }}
                       >
-                        {form.businessName}
+                        {getInitials(form.businessName)}
                       </Avatar>
                       <Typography
                         color="textPrimary"
@@ -136,7 +136,7 @@ const LatestRequest = ({ forms, viewAll }: Props) => (
                     {new Date(form.submittedAt).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
                   </TableCell>
                   <TableCell>
-                    <CircularProgress value={(form.approvals.length / 6) * 100} variant="determinate" color="primary" />
+                    <CircularProgressWithLabel value={(form.approvals.length / 6) * 100} />
                   </TableCell>
                 </TableRow>
               )})}
