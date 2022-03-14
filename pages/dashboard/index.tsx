@@ -12,6 +12,9 @@ import { apiGetRequest } from '../../hocs/axiosRequests';
 import { capitalCase } from "change-case";
 import { useRouter } from 'next/router';
 import { BusinessRegistry } from './business/new/assessment/[businessId]';
+import AddBusinessIcon from "@mui/icons-material/AddBusiness";
+import CorporateFareIcon from '@mui/icons-material/CorporateFare';
+import RestorePageIcon from '@mui/icons-material/RestorePage';
 
 const ServiceCard = dynamic(() => import('../../components/dashboard/ServiceCard'));
 const NewBusinessDialog = dynamic(() => import('../../components/dashboard/newBusinessDialog'));
@@ -20,19 +23,19 @@ const BusinessRenewDialog = dynamic(() => import('../../components/business/clie
 
 const malabonServices = [
   {
-      image: '/covers/business_apply.jpg',
+      icon: <AddBusinessIcon sx={{ width: 80, height: 80 }} color="secondary" />,
       title: 'Online New Business Registration',
       description: 'Register your new business online and receive your business permit in just 5 steps.',
       applyLink: '/dashboard/business/new/zoning'
   },
   {
-      image: '/covers/renewal_business.jpg',
+      icon: <RestorePageIcon sx={{ width: 80, height: 80 }} color="secondary" />,
       title: 'Online Renewal of Business Permit',
       description: 'Renew your business permit online anytime and anywhere in just 5 steps.',
       applyLink: '/business/renew'
   },
   {
-      image: '/covers/building_apply.jpg',
+      icon: <CorporateFareIcon sx={{ width: 80, height: 80 }} color="secondary" />,
       title: 'Online Building Permit Registration',
       description: 'Register your new facility online and receive your business permit in just 5 steps.',
       applyLink: '/building/register'
@@ -103,7 +106,7 @@ export default function Dashboard(props: Props) {
           alignItems: 'end',
           justifyContent: 'flex-start',
           wisth: '100vw',
-          height: 400,
+          height: 300,
           backgroundImage: 'url("/covers/city_hall.png")',
           backgroundRepeat: 'no-repeat',
           background: 'linear-gradient(0deg, rgba(255, 0, 150, ), rgba(255, 0, 150, 0.5))',
@@ -121,7 +124,7 @@ export default function Dashboard(props: Props) {
             </Box>
         </Box>
         <Container maxWidth="lg">
-          <Box sx={{ mt: 8, mb: 5 }}>
+          <Box sx={{ mt: 5, mb: 5 }}>
             <Typography component="p" variant="h5" textAlign="center" sx={{ color: theme.palette.primary.dark }}>
               How can we help you today, <strong style={{ color: theme.palette.primary.main }}>{account && capitalCase(account.account.firstName + ' ' + account.account.lastName)}</strong>?
             </Typography>

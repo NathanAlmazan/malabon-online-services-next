@@ -43,6 +43,7 @@ function ContactInformation(props: Props) {
                             name="mobile"
                             label="Phone Number"
                             value={mobile ? mobile : ''}
+                            type="number"
                             onChange={editable ? handleValueChange : undefined}
                             InputProps={{
                                 startAdornment: <InputAdornment position="start">+63</InputAdornment>

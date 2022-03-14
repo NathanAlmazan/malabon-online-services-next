@@ -2,7 +2,7 @@ import { Avatar, Card, CardContent, Grid, Typography } from '@mui/material';
 import BusinessIcon from '@mui/icons-material/Business';
 
 
-const TotalCustomers = (props: { title: string }) => (
+const TotalCustomers = (props: { title: string, value: number }) => (
   <Card sx={{ height: '100%' }}>
     <CardContent>
       <Grid
@@ -22,7 +22,7 @@ const TotalCustomers = (props: { title: string }) => (
             color="textPrimary"
             variant="h4"
           >
-            160
+            {props.value}
           </Typography>
         </Grid>
         <Grid item>

@@ -18,6 +18,7 @@ export default function AccountPopover() {
   const { firebaseClass, currentUser } = useAuth();
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
+  const router = useRouter();
   const history = useRouter();
 
   const MENU_OPTIONS = [
@@ -29,7 +30,7 @@ export default function AccountPopover() {
     {
       label: 'Profile',
       icon: PersonIcon,
-      linkTo: `/employees/profile`
+      linkTo: `/profile/` + currentUser?.user.uid
     },
     {
         label: 'Settings',
@@ -44,6 +45,11 @@ export default function AccountPopover() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const handleClickMenu = (path: string) => {
+    handleClose();
+    router.push(path);
+  }
 
   const handleLogout = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (firebaseClass) {
@@ -99,7 +105,7 @@ export default function AccountPopover() {
         {MENU_OPTIONS.map((option) => (
           <MenuItem
             key={option.label}
-            onClick={e => handleClose()}
+            onClick={e => handleClickMenu(option.linkTo)}
             sx={{ typography: 'body2', py: 1, px: 2.5 }}
           >
             <Box

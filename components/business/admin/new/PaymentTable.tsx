@@ -14,6 +14,7 @@ import {
   Typography
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import Image from 'next/image';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
 import { useRouter } from "next/router";
 import PaymentVerifyDialog from "./PaymentVerify";
@@ -196,6 +197,30 @@ const PaymentTable = (props: Props) => {
                   </TableCell>
                 </TableRow>
               )})}
+              {forms.length == 0 && (
+                <TableRow>
+                  <TableCell colSpan={5}>
+                    <Box sx={{ 
+                      display: 'flex',
+                      width: '100%',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      p: 3, 
+                      flexDirection: 'column'
+                    }}>
+                      <Image 
+                        src="/icons/assess_icon.png"
+                        alt='sucess'
+                        width={300}
+                        height={300}
+                      />  
+                      <Typography variant="h6" sx={{ mt: 2 }}>
+                        All Renew Business Forms are assessed successfully
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>

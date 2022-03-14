@@ -160,6 +160,7 @@ export default function AdminDashboard(props: Props) {
           >
             <TotalCustomers 
               title="BUSINESS RENEWAL"
+              value={renewForms.forms.length}
             />
           </Grid>
           <Grid
@@ -170,7 +171,8 @@ export default function AdminDashboard(props: Props) {
             xs={12}
           >
              <TotalCustomers 
-              title="BUILING PERMIT"
+              title="BUILDING PERMIT"
+              value={60}
             />
           </Grid>
           <Grid

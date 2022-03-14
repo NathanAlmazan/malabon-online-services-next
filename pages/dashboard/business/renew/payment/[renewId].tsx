@@ -160,7 +160,7 @@ export default function RegistrationPayment(props: Props) {
                 if (submitPayment.status > 300) {
                     setError(submitPayment.message);
                 } else {
-                    router.push("/dashboard/business/new/claim/" + renewId);
+                    router.push("/dashboard/business/renew/claim/" + renewId);
                 }
             }
             setLoading(false);
