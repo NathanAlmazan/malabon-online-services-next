@@ -18,6 +18,7 @@ import RestorePageIcon from '@mui/icons-material/RestorePage';
 
 const ServiceCard = dynamic(() => import('../../components/dashboard/ServiceCard'));
 const NewBusinessDialog = dynamic(() => import('../../components/dashboard/newBusinessDialog'));
+const BuildingPermitDialog = dynamic(() => import('../../components/dashboard/BuildingDialog'));
 const RenewalDialog = dynamic(() => import('../../components/dashboard/renewalDialog'));
 const BusinessRenewDialog = dynamic(() => import('../../components/business/client/renew/RenewDialog'));
 
@@ -76,12 +77,15 @@ export default function Dashboard(props: Props) {
   const [openNewBusiness, setOpenNewBusiness] = useState<boolean>(false);
   const [openRenewal, setOpenrenewal] = useState<boolean>(false);
   const [renewDialog, setrenewDialog] = useState<boolean>(false);
+  const [openBuilding, setOpenBuilding] = useState<boolean>(false);
 
   const openDialog = (dialog: string) => {
     if (dialog == "Online New Business Registration") {
       setOpenNewBusiness(true);
     } else if (dialog == "Online Renewal of Business Permit") {
       setOpenrenewal(true);
+    } else {
+      setOpenBuilding(true);
     }
   }
 
@@ -138,6 +142,7 @@ export default function Dashboard(props: Props) {
           </Grid>
         </Container>
         <NewBusinessDialog open={openNewBusiness} handleClose={() => setOpenNewBusiness(false)} proceed={proceedToPage} />
+        <BuildingPermitDialog open={openBuilding} handleClose={() => setOpenBuilding(false)} proceed={proceedToPage}/>
         <RenewalDialog open={openRenewal} handleClose={() => setOpenrenewal(false)} proceed={proceedRenew} />
         <BusinessRenewDialog open={renewDialog} handleClose={() => setrenewDialog(false)} businesses={ownedBusinesses} accessToken={accessToken} uid={account.account.uid} />
         <Copyright />

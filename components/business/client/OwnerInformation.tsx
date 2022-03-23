@@ -54,8 +54,10 @@ function OwnerInformation(props: Props) {
   })
 
   const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
-    addOwner(ownerInfo);
-    setOwnerInfo(initialOwner);
+    if (givenName.length > 0 && middleName.length > 0 && surname.length > 0 && citizenship != null) {
+        addOwner(ownerInfo);
+        setOwnerInfo(initialOwner);
+    }
   }
 
   return (

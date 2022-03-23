@@ -73,7 +73,7 @@ export default function ClaimPermitPage(props : Props) {
   useEffect(() => {
     const rejectedPayment = form.payments.find(payment => payment.rejected);
 
-    if (rejectedPayment) {
+    if (rejectedPayment && !form.completed) {
         setRejectedPayment(state => rejectedPayment);
     }
   }, [form])

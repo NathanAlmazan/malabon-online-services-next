@@ -65,6 +65,7 @@ export interface BusinessFiles {
     taxIncentiveFile?: FormFiles;
     rentedFile?: FormFiles;
     registrationFile?: FormFiles;
+    zoneAppeal?: FormFiles;
     otherFiles: FormFiles[];
 }
 

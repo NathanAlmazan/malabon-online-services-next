@@ -7,92 +7,36 @@ import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import dynamic from "next/dynamic";
 import { GetServerSideProps } from 'next';
-import { apiGetRequest } from '../../../../../hocs/axiosRequests';
-import parseCookies from '../../../../../config/parseCookie';
+import { apiGetRequest } from '../../../../hocs/axiosRequests';
+import parseCookies from '../../../../config/parseCookie';
 import Button from '@mui/material/Button';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DownloadDoneIcon from '@mui/icons-material/DownloadDone';
 import { useRouter } from "next/router";
+import { SubmittedForm, BuildingPayments } from '../../../../components/building/buildingTypes';
 
-const StepProgress = dynamic(() => import("../../../../../components/StepProgress"));
-const Copyright = dynamic(() => import("../../../../../components/Copyright"));
-
-type BusinessRegistry = {
-    registrationNumber: string;
-    TIN: string;
-    businessName: string;
-    tradeName: string;
-    telephone: string;
-    mobile: string;
-    email: string;
-    website: string | null;
-    orgType: string;
-    filipinoEmployees: number;
-    foreignEmployees: number;
-    businessArea: number;
-    totalFloors: number;
-    maleEmployees: number;
-    femaleEmployees: number;
-    totalEmployees: number;
-    lguEmployees: number;
-    deliveryUnits: number;
-    activity: string;
-    capital: number;
-    taxIncentive: boolean;
-    rented: boolean;
-    submittedAt: Date;
-    certificateId: string | null;
-    certificateFile: string | null;
-    approved: boolean;
-    taxAmount: number | null;
-    archived: boolean;
-    trackNumber: number | null;
-    quarterPayment: boolean;
-}
-
-type BusinessPayments = {
-    paymentId: number;
-    amount: string;
-    paid: boolean;
-    newBusiness: boolean;
-    issuedAt: Date;
-    transactionId: string | null;
-    paidAt: Date | null;
-    receipt: string | null;
-    businessId: number;
-    rejected: boolean;
-    rejectMessage: string | null;
-}
-
-type BusinessAppointment = {
-    appointmentId: number;
-    businessId: number;
-    schedule: Date;
-    claimed: boolean;
-}
+const StepProgress = dynamic(() => import("../../../../components/StepProgress"));
+const Copyright = dynamic(() => import("../../../../components/Copyright"));
 
 interface Props {
     accessToken: string;
-    businessId: number;
-    form: BusinessRegistry & {
-        appointment: BusinessAppointment | null;
-        payments: BusinessPayments[];
-    }
+    buildingId: number;
+    form: SubmittedForm;
 }
 
 export default function ClaimPermitPage(props : Props) {
-  const { accessToken, businessId, form } = props;
+  const { accessToken, buildingId, form } = props;
   const router = useRouter();
-  const [appointment, setAppointment] = useState<BusinessAppointment>();
-  const [rejectedPayment, setRejectedPayment] = useState<BusinessPayments>();
+  const [appointment, setAppointment] = useState<Date | null>(null);
+  const [rejectedPayment, setRejectedPayment] = useState<BuildingPayments>();
 
   useEffect(() => {
-    const appointment = form.appointment;
+    const appointment = form.releaseDate;
     const rejectedPayment = form.payments.find(payment => payment.rejected);
 
     if (appointment) {
         setAppointment(state => appointment);
-    } else if (rejectedPayment && form.certificateFile != null) {
+    } else if (rejectedPayment && !form.approved) {
         setRejectedPayment(state => rejectedPayment);
     }
   }, [form])
@@ -104,7 +48,7 @@ export default function ClaimPermitPage(props : Props) {
   return (
     <>
         <Head>
-        <title>Claim Permit | New Business</title>
+        <title>Claim Permit | Building Permit</title>
         </Head>
         <Container>
             <Box sx={{ 
@@ -115,7 +59,7 @@ export default function ClaimPermitPage(props : Props) {
                 mb: 5
             }}>
                 <Typography component="h1" variant="h5" color="secondary" sx={{ pr: 2 }}>
-                    Application for New Business Permit
+                    Application for Building Permit
                 </Typography>
             </Box>
             <Paper elevation={16} sx={{ p: 2 }}>
@@ -138,13 +82,13 @@ export default function ClaimPermitPage(props : Props) {
                             height={400}
                         />
                         <Typography variant="body1" component="h1" align="center" sx={{ maxWidth: 350 }}>
-                            You can now claim your business permit on
+                            You can now claim your building permit on
                         </Typography>
                         <Typography variant="h5" component="h1" align="center">
-                            {new Date(form.submittedAt).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                            {new Date(form.releaseDate as Date).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                         </Typography>
                         <Button variant="outlined" startIcon={<DownloadDoneIcon />} sx={{ borderRadius: 50, mt: 3 }} onClick={() => handleViewSubmittedFile()}>
-                            View Business Permit
+                            View Building Permit
                         </Button>
                     </Box>
                 ) : (
@@ -170,7 +114,7 @@ export default function ClaimPermitPage(props : Props) {
                                 {rejectedPayment.rejectMessage && rejectedPayment.rejectMessage} Please send your proof of payment again.
                             </Typography>
 
-                            <Button variant="outlined" startIcon={<ArrowBackIcon />} sx={{ borderRadius: 50 }} onClick={() => router.push('/dashboard/business/new/payment/' + businessId)}>
+                            <Button variant="outlined" startIcon={<ArrowBackIcon />} sx={{ borderRadius: 50 }} onClick={() => router.push('/dashboard/business/new/payment/' + buildingId)}>
                                 Go Back to Payment
                             </Button>
                         </Box>
@@ -194,7 +138,7 @@ export default function ClaimPermitPage(props : Props) {
                                 Congratulations!
                             </Typography>
                             <Typography variant="body1" component="h1" align="center" sx={{ maxWidth: 350 }}>
-                                Your new business is now registered. Please wait while we process your official business permit. The date and time when you can claim your business permit will shown here.
+                                Your establishment is now registered. Please wait while we process your official business permit. The date and time when you can claim your buuilding permit will shown here.
                             </Typography>
                         </Box>
                     )
@@ -224,7 +168,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       }
     }
   
-    const result = await apiGetRequest('/business/new/form/search/' + params.businessId, data.loggedInUser);
+    const result = await apiGetRequest('/building/view/' + params.buildingId, data.loggedInUser);
   
     if (result.status > 300) {
       return {
@@ -236,7 +180,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       props: {
         accessToken: data.loggedInUser,
-        businessId: parseInt(params.businessId as string),
+        buildingId: parseInt(params.buildingId as string),
         form: result.data
       }
     }

@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
+import { capitalCase } from "change-case";
 
 interface Props {
     choices: {
@@ -32,9 +33,13 @@ function FormRadioGroup(props: Props) {
                     value={value}
                     onChange={handleValueChange}
                 >
+                    <Grid container>
                     {choices.map(choice => (
-                        <FormControlLabel key={choice.value} value={choice.value} control={<Radio />} label={choice.label} />
+                        <Grid item xs={12} sm={6} md={4} key={choice.value}>
+                            <FormControlLabel value={choice.value} control={<Radio />} label={capitalCase(choice.label)} />
+                        </Grid>
                     ))}
+                    </Grid>
                 </RadioGroup>
             </Grid>
         </Grid>

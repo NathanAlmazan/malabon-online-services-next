@@ -5,7 +5,7 @@ import DashboardLayout from './DashboardLayout';
 export default function Layout({ children }: { children: ReactNode }) {
     const { pathname } = useRouter();
 
-    const fullScreenPages = ['/signin', '/signup'];
+    const fullScreenPages = ['/signin', '/signup', '/password/reset', '/termsAndConditions'];
 
     if (fullScreenPages.includes(pathname)) {
         return (

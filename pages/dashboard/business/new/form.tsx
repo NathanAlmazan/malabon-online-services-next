@@ -37,7 +37,8 @@ const Copyright = dynamic(() => import("../../../../components/Copyright"));
 
 type ZoningCookie = {
     location: Location,
-    business: BusinessTypes
+    business: BusinessTypes,
+    approved: boolean
 }
 
 type BusinessAdresses = {
@@ -71,7 +72,7 @@ type ZoningResult = {
     businessTypes: BusinessTypes[]
 }
 
-type DocumentTypes = "Proof of Registration" | "Tax Incentive Certificate" | "Contract of Lease" | "Tax Declaration" | "Other Requirements";
+type DocumentTypes = "Proof of Registration" | "Tax Incentive Certificate" | "Contract of Lease" | "Tax Declaration" | "Other Requirements" | "Zone Appeal";
 
 type BusinessServices = {
     productService: string;
@@ -122,6 +123,7 @@ interface BusinessFiles {
     taxIncentiveFile?: Files;
     rentedFile?: Files;
     registrationFile?: Files;
+    zoneAppeal?: Files;
     otherFiles: Files[];
 }
 
@@ -322,6 +324,8 @@ export default function RegistrationForm({ accessToken, zoning, lineOfBusiness, 
             setFormFiles({ ...formFiles, registrationFile: { documentType: documentType, fileName: file.name, fileData: file } });
         } else if (documentType == "Tax Incentive Certificate") {
             setFormFiles({ ...formFiles, taxIncentiveFile: { documentType: documentType, fileName: file.name, fileData: file } });
+        } else if (documentType == "Zone Appeal") {
+            setFormFiles({ ...formFiles, zoneAppeal: { documentType: documentType, fileName: file.name, fileData: file } });
         } else {
             let businessFiles = formFiles.otherFiles;
             businessFiles.push({ documentType: documentType, fileName: file.name, fileData: file })
@@ -348,6 +352,7 @@ export default function RegistrationForm({ accessToken, zoning, lineOfBusiness, 
         let taxFile = formFiles.taxIncentiveFile;
         let regFile = formFiles.registrationFile;
         let rentFile = formFiles.rentedFile;
+        let zoneFile = formFiles.zoneAppeal;
 
         if (!regFile || !rentFile) {
             setLoading(false);
@@ -362,6 +367,11 @@ export default function RegistrationForm({ accessToken, zoning, lineOfBusiness, 
         if (taxFile) {
             taxFile.fileURL = await uploadFileToFirebase(account.account.uid, taxFile.fileData as File, taxFile.fileName);
             businessFiles.push(taxFile);
+        }
+
+        if (zoneFile) {
+            zoneFile.fileURL = await uploadFileToFirebase(account.account.uid, zoneFile.fileData as File, zoneFile.fileName);
+            businessFiles.push(zoneFile);
         }
 
         formFiles.otherFiles.forEach(async (file) => {
@@ -579,6 +589,7 @@ export default function RegistrationForm({ accessToken, zoning, lineOfBusiness, 
                                 removeFile={handleRemoveFiles}
                                 formFiles={formFiles}
                                 addFormFiles={handleAddFiles}
+                                approved={zoning.approved}
                                 editable={editable}
                             />
 

@@ -41,7 +41,7 @@ export const AdminSidebar = [
         icon: <StoreIcon />
     },
     {
-        path: '/admin/building/register',
+        path: '/admin/building',
         title: 'Building Permit',
         icon: <BusinessIcon />
     },

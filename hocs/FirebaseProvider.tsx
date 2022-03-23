@@ -1,7 +1,7 @@
 import React, {  useState, ReactNode, useContext, useEffect, createContext } from 'react';
 import { initializeApp } from 'firebase/app';
 import { useCookies } from "react-cookie";
-import { getAuth, GoogleAuthProvider, signInWithPopup, FacebookAuthProvider, signInWithEmailAndPassword, signOut, User } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup, FacebookAuthProvider, signInWithEmailAndPassword, signOut, User, sendPasswordResetEmail  } from "firebase/auth";
 import { getStorage } from 'firebase/storage';
 import { apiPostRequest } from './axiosRequests';
 
@@ -64,6 +64,10 @@ class FirebaseAuthentication {
 
     signInWithEmailAndPassword(email: string, password: string) {
         return signInWithEmailAndPassword(firebaseAuth, email, password);
+    }
+
+    forgotPassword(email: string) {
+        return sendPasswordResetEmail(firebaseAuth, email);
     }
 
     signOut() {

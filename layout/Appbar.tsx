@@ -1,23 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge';
 import Avatar from '@mui/material/Avatar';
 import MenuIcon from '@mui/icons-material/Menu';
 import Stack from '@mui/material/Stack';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import { motion, AnimatePresence } from "framer-motion";
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import AccountPopover from './AccountPopover';
+import NotificationsPopover from './NotificationsPopover';
 import { useRouter } from "next/router";
+import { useAuth } from '../hocs/FirebaseProvider';
+import { apiGetRequest } from '../hocs/axiosRequests';
 
 const drawerWidth: number = 240;
 
 interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
+}
+
+type Notifications = {
+    notifId: number;
+    notifSubject: string;
+    notifDesc: string;
+    read: boolean;
+    userId: number;
+    createdAt: Date;
 }
 
 const AppBar = styled(MuiAppBar, {
@@ -46,6 +56,32 @@ const AppBar = styled(MuiAppBar, {
 
 function Appbar({ matches, open, toggleDrawer }: Props) {
     const router = useRouter();
+    const { currentUser } = useAuth();
+    const [notifications, setNotifications] = useState<Notifications[]>([]);
+
+    useEffect(() => {
+        const getNotifications = async () => {
+            const result = await apiGetRequest('/notifications/user', currentUser?.accessToken);
+            const notifList = result.data as Notifications[]; 
+
+            setNotifications(state => notifList);
+        }
+        if (currentUser) {
+            getNotifications();
+        }
+    }, [currentUser]);
+
+    const handleNotifications = async () => {
+        notifications.forEach(async (notif) => {
+            await apiGetRequest('/notifications/read/' + notif.notifId, currentUser?.accessToken);
+        })
+        setNotifications(
+            notifications.map((notification) => ({
+              ...notification,
+              read: true
+            }))
+        );
+    }
 
   return (
     <AppBar position="absolute" open={open} color="inherit" sx={{ p: 0 }}>
@@ -75,11 +111,10 @@ function Appbar({ matches, open, toggleDrawer }: Props) {
                             >
                             <MenuIcon />
                         </IconButton>
-                        <IconButton color="secondary">
-                            <Badge badgeContent={4} color="primary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
+                        <NotificationsPopover 
+                            notifications={notifications}
+                            setNotifications={handleNotifications}
+                        />
                         <IconButton color="secondary" onClick={() => router.push('/')}>
                             <HomeRoundedIcon />
                         </IconButton>

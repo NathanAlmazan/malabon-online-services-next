@@ -7,7 +7,7 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
   
   
-  const steps = ['Zoning', 'Form', 'Assessment', 'Payment', 'Claim'];
+  const steps = ['Zone', 'Form', 'Assessment', 'Payment', 'Claim'];
 
 interface Props {
   step: number;

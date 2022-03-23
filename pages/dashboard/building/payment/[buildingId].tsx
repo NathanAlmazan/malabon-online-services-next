@@ -13,19 +13,20 @@ import { styled, useTheme } from '@mui/material/styles';
 import dynamic from "next/dynamic";
 import PaymentsIcon from '@mui/icons-material/Payments';
 import { motion, AnimatePresence } from "framer-motion";
-import { Paypal as PaypalIcon } from '../../../../../icons/paypal';
-import parseCookies from '../../../../../config/parseCookie';
-import { apiGetRequest, apiPostRequest } from '../../../../../hocs/axiosRequests';
+import { Paypal as PaypalIcon } from '../../../../icons/paypal';
+import parseCookies from '../../../../config/parseCookie';
+import { apiGetRequest, apiPostRequest } from '../../../../hocs/axiosRequests';
 import Stack from '@mui/material/Stack';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-import uploadFileToFirebase from '../../../../../hocs/uploadFile';
+import uploadFileToFirebase from '../../../../hocs/uploadFile';
 import braintree from "braintree-web";
 import { useRouter } from "next/router";
+import { SubmittedForm, BuildingPayments } from '../../../../components/building/buildingTypes';
 
-const StepProgress = dynamic(() => import("../../../../../components/StepProgress"));
-const PaypalContainer = dynamic(() => import("../../../../../components/business/client/payment/paypal"), { ssr: false });
-const BankDeposit = dynamic(() => import("../../../../../components/business/client/payment/bankDeposit"));
-const Copyright = dynamic(() => import("../../../../../components/Copyright"));
+const StepProgress = dynamic(() => import("../../../../components/StepProgress"));
+const PaypalContainer = dynamic(() => import("../../../../components/business/client/payment/paypal"), { ssr: false });
+const BankDeposit = dynamic(() => import("../../../../components/business/client/payment/bankDeposit"));
+const Copyright = dynamic(() => import("../../../../components/Copyright"));
 
 const SeverityPillRoot = styled('span')(({ theme }: { theme: any }) => {
     const backgroundColor = "#FFFF";
@@ -54,58 +55,6 @@ const SeverityPillRoot = styled('span')(({ theme }: { theme: any }) => {
     };
   });
 
-type BusinessRegistry = {
-    registrationNumber: string;
-    TIN: string;
-    businessName: string;
-    tradeName: string;
-    telephone: string;
-    mobile: string;
-    email: string;
-    website: string | null;
-    orgType: string;
-    filipinoEmployees: number;
-    foreignEmployees: number;
-    businessArea: number;
-    totalFloors: number;
-    maleEmployees: number;
-    femaleEmployees: number;
-    totalEmployees: number;
-    lguEmployees: number;
-    deliveryUnits: number;
-    activity: string;
-    capital: number;
-    taxIncentive: boolean;
-    rented: boolean;
-    submittedAt: Date;
-    certificateId: string | null;
-    approved: boolean;
-    taxAmount: number | null;
-    archived: boolean;
-    trackNumber: number | null;
-    quarterPayment: boolean;
-}
-
-type BusinessApproval = {
-    approved: boolean;
-    approvalType: string;
-    approvedAt: Date;
-    required: boolean;
-    approvalFee: string | null;
-    remarks: string | null;
-    official: {
-        firstName: string;
-        lastName: string;
-    }
-}
-
-type Files = {
-    fileName: string;
-    fileURL?: string;
-    documentType: string;
-    fileData?: File;
-}
-
 type UserAccount = {
     account: {
         email: string;
@@ -114,43 +63,10 @@ type UserAccount = {
     }
 }
 
-function getTitle(role: string) {
-    switch(role) {
-      case "OLBO": 
-        return "Occupancy Permit";
-      case "CHO":
-        return "Sanitary Permit";
-      case "CENRO":
-        return "City Environmental Certificate";
-      case "OCMA":
-        return "Market Clearance";
-      case "BFP":
-        return "Fire Safety Inspection Certificate";
-      default:
-        return "Zoning Clearance";
-    }
-  }
-
-type BusinessPayments = {
-    paymentId: number;
-    amount: string;
-    paid: boolean;
-    newBusiness: boolean;
-    issuedAt: Date;
-    transactionId: string | null;
-    paidAt: Date | null;
-    receipt: string | null;
-    businessId: number;
-}
-
 interface Props {
     accessToken: string;
-    businessId: number;
-    form: BusinessRegistry & {
-        payments: BusinessPayments[];
-        approvals: BusinessApproval[];
-        files: Files[];
-    },
+    buildingId: number;
+    form: SubmittedForm;
     clientKey: {
         clientKey: string;
     },
@@ -158,11 +74,11 @@ interface Props {
 }
 
 export default function RegistrationPayment(props: Props) {
-  const { form, clientKey, account, accessToken, businessId } = props;
+  const { form, clientKey, account, accessToken, buildingId } = props;
   const theme = useTheme();
   const router = useRouter();
   const [paymentMode, setPaymentMode] = useState<string>("Bank Deposit");
-  const [totalTax, setTotalTax] = useState<BusinessPayments>();
+  const [totalTax, setTotalTax] = useState<BuildingPayments>();
   const [bankDepositSlip, setBankDepositSlip] = useState<File>();
   const [cashProof, setCashProof] = useState<File>();
   const [deviceData, setDeviceData] = useState<string>();
@@ -216,12 +132,12 @@ export default function RegistrationPayment(props: Props) {
                     paymentId: totalTax.paymentId,
                     receiptURL: uploadedFile
                 })
-                const submitPayment = await apiPostRequest('/payments/business/bank', body, accessToken);
+                const submitPayment = await apiPostRequest('/payments/building/bank', body, accessToken);
 
                 if (submitPayment.status > 300) {
                     setError(submitPayment.message);
                 } else {
-                    router.push("/dashboard/business/new/claim/" + businessId);
+                    router.push("/dashboard/building/claim/" + buildingId);
                 }
             }
             setLoading(false);
@@ -239,12 +155,12 @@ export default function RegistrationPayment(props: Props) {
                   paymentId: totalTax.paymentId,
                   receiptURL: uploadedFile
               })
-              const submitPayment = await apiPostRequest('/payments/business/bank', body, accessToken);
+              const submitPayment = await apiPostRequest('/payments/building/bank', body, accessToken);
 
               if (submitPayment.status > 300) {
                   setError(submitPayment.message);
               } else {
-                  router.push("/dashboard/business/new/claim/" + businessId);
+                  router.push("/dashboard/building/claim/" + buildingId);
               }
           }
           setLoading(false);
@@ -262,12 +178,12 @@ export default function RegistrationPayment(props: Props) {
                 deviceData: deviceData
             })
 
-            const submitPayment = await apiPostRequest('/payments/business/paypal', body, accessToken);
+            const submitPayment = await apiPostRequest('/payments/building/paypal', body, accessToken);
 
             if (submitPayment.status > 300) {
                 setError(submitPayment.message);
             } else {
-              router.push("/dashboard/business/new/claim/" + businessId);
+              router.push("/dashboard/building/claim/" + buildingId);
             }
 
             setLoading(false);
@@ -277,7 +193,7 @@ export default function RegistrationPayment(props: Props) {
   return (
     <>
         <Head>
-          <title>Tax Payment | New Business</title>
+          <title>Tax Payment | Building Permit</title>
         </Head>
         <Container>
           <Box sx={{ 
@@ -288,7 +204,7 @@ export default function RegistrationPayment(props: Props) {
               mb: 5
             }}>
                 <Typography component="h1" variant="h5" color="secondary" sx={{ pr: 2 }}>
-                  Application for New Business Permit
+                  Application for Building Permit
                 </Typography>
           </Box>
           <Paper elevation={16} sx={{ p: 2 }}>
@@ -322,7 +238,7 @@ export default function RegistrationPayment(props: Props) {
                                     {form.approvals.map((approval) =>
                                         <Stack key={approval.approvalType} direction="row" justifyContent="space-between">
                                             <Typography variant="body1" sx={{ maxWidth: 200 }}>
-                                                {getTitle(approval.approvalType)}
+                                                {approval.approvalType}
                                             </Typography>
                                             <Typography variant="body1" sx={{ fontSize: 16, fontWeight: 500 }}>
                                                 {"₱" + approval.approvalFee}
@@ -453,7 +369,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       }
     }
   
-    const result = await apiGetRequest('/business/new/form/search/' + parseInt(params.businessId as string), data.loggedInUser);
+    const result = await apiGetRequest('/building/view/' + params.buildingId, data.loggedInUser);
     const clientKey = await apiGetRequest('/payments/paypal/client', data.loggedInUser);
     const account = await apiGetRequest('/accounts/search', data.loggedInUser);
   
@@ -467,7 +383,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       props: {
         accessToken: data.loggedInUser,
-        businessId: parseInt(params.businessId as string),
+        buildingId: parseInt(params.buildingId as string),
         form: result.data,
         clientKey: clientKey.data,
         account: account.data

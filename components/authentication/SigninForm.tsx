@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import Stack from "@mui/material/Stack";
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -74,12 +72,11 @@ export default function SigninForm({ email, password, error, handleText, handleS
         </Stack>
 
         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-          <FormControlLabel
-            control={<Checkbox />}
-            label="Remember me"
-          />
+          <Link variant="subtitle2" href="/signup">
+            {"Don't have account? Signup"}
+          </Link>
 
-          <Link variant="subtitle2" href="#">
+          <Link variant="subtitle2" href="/password/reset">
             Forgot password?
           </Link>
         </Stack>

@@ -82,7 +82,7 @@ type Files = {
     fileData?: File;
 }
 
-type DocumentTypes = "Proof of Registration" | "Tax Incentive Certificate" | "Contract of Lease" | "Tax Declaration" | "Other Requirements";
+type DocumentTypes = "Proof of Registration" | "Tax Incentive Certificate" | "Contract of Lease" | "Tax Declaration" | "Other Requirements" | "Zone Appeal";
 
 type BusinessServices = {
     productService: string;
@@ -155,6 +155,7 @@ interface BusinessFiles {
     taxIncentiveFile?: Files;
     rentedFile?: Files;
     registrationFile?: Files;
+    zoneAppeal?: Files;
     otherFiles: Files[];
 }
 
@@ -319,6 +320,7 @@ export default function BusinessRegisterForm(props: Props) {
         setFormFiles(state => ({
             otherFiles: form.files.filter(file => file.documentType == "Other Requirements"),
             registrationFile: form.files.find(file => file.documentType == "Proof of Registration"),
+            zoneAppeal: form.files.find(file => file.documentType == "Zone Appeal"),
             rentedFile: form.files.find(file => file.documentType == "Contract of Lease" || file.documentType == "Tax Declaration"),
             taxIncentiveFile: form.files.find(file => file.documentType == "Tax Incentive Certificate")
         }));
@@ -389,6 +391,8 @@ export default function BusinessRegisterForm(props: Props) {
         } else if (documentType == "Proof of Registration") {
             setFormFiles({ ...formFiles, registrationFile: { documentType: documentType, fileName: file.name, fileData: file } });
         } else if (documentType == "Tax Incentive Certificate") {
+            setFormFiles({ ...formFiles, taxIncentiveFile: { documentType: documentType, fileName: file.name, fileData: file } });
+        } else if (documentType == "Zone Appeal") {
             setFormFiles({ ...formFiles, taxIncentiveFile: { documentType: documentType, fileName: file.name, fileData: file } });
         } else {
             let businessFiles = formFiles.otherFiles;
@@ -598,6 +602,7 @@ export default function BusinessRegisterForm(props: Props) {
                         formFiles={formFiles}
                         addFormFiles={handleAddFiles}
                         editable={editable}
+                        approved={Boolean(!formFiles.zoneAppeal)}
                     />
 
                 </Box>

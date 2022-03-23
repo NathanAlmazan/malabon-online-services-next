@@ -15,6 +15,7 @@ import { apiPostRequest } from '../../../../hocs/axiosRequests';
 const ZoningToolbar = dynamic(() => import('./ZoningToolbar'));
 const ZoningBusiness = dynamic(() => import('./ZoningBusiness'));
 const ZoningMap = dynamic(() => import('./ZoningMap'));
+const ZoningAlert = dynamic(() => import('./ZoningAlert'));
 
 const ParallaxBox = styled(Box)({
     backgroundImage: 'url("/covers/malabon_statue.png")',
@@ -33,7 +34,7 @@ const ParallaxBox = styled(Box)({
 interface Props {
     mapsKey: string;
     accessToken: string;
-    onSubmit: (location: Location, business: BusinessTypes) => void;
+    onSubmit: (location: Location, business: BusinessTypes, exist: boolean) => void;
 }
 
 export interface Location {
@@ -58,6 +59,7 @@ export interface BusinessTypes {
     typeId: number;
     typeName: string;
     zoneId: number;
+    approved?: boolean;
 }
 
 type libray = "places" | "drawing" | "geometry" | "localContext" | "visualization"
@@ -68,7 +70,7 @@ function ZoningPage({ mapsKey, accessToken, onSubmit }: Props) {
     const theme = useTheme();
     const matches = useMediaQuery(theme.breakpoints.down('sm'));
     const [collapse, setCollapse] = useState<boolean>(false);
-    const [businessZone, setBusinessZone] = useState<string>('');
+    const [businessZone, setBusinessZone] = useState<string | null>('');
 
     const [currentLocation, setCurrentLocation] = useState<Location>({
         lat: 14.657868,
@@ -84,6 +86,7 @@ function ZoningPage({ mapsKey, accessToken, onSubmit }: Props) {
 
     const [businessTypes, setBusinessTypes] = useState<BusinessTypes[]>([]);
     const [selectedBusiness, setSelectedBusiness] = useState<BusinessTypes | null>(null);
+    const [openAlert, setOpenAlert] = useState<boolean>(false);
 
     const handleSelectBusiness = (businessType: BusinessTypes) => {
         setBusinessError(false);
@@ -104,7 +107,7 @@ function ZoningPage({ mapsKey, accessToken, onSubmit }: Props) {
             if (result.status < 300) {
                 const businessTypes: BusinessTypes[] = (result.data as ZoningResult).businessTypes;
 
-                setBusinessZone(state => (result.data as ZoningResult).zone.zoneBase);
+                setBusinessZone(state => (result.data as ZoningResult).zone ? (result.data as ZoningResult).zone.zoneBase : null);
                 setCollapse(state => true);
 
                 setBusinessTypes(state => businessTypes);
@@ -124,7 +127,7 @@ function ZoningPage({ mapsKey, accessToken, onSubmit }: Props) {
     }, []);
 
     const handleLocationChange = (location: Location) => {
-        if (location.address.split(', ').length < 5) {
+        if (location.address.split(', ').length < 4) {
             setAddressError("Please atleast specify the street of your business address.");
         } 
         else setAddressError(state => null);
@@ -141,8 +144,19 @@ function ZoningPage({ mapsKey, accessToken, onSubmit }: Props) {
 
     const handleSubmitAddress = (event: React.MouseEvent<HTMLButtonElement>) => {
         if (selectedBusiness != null) {
-            onSubmit(currentLocation, selectedBusiness);
+            if (selectedBusiness.approved && businessZone != null) {
+                onSubmit(currentLocation, selectedBusiness, Boolean(businessZone != null));
+            } else {
+                setOpenAlert(true);
+            }
         } else setBusinessError(true);
+    }
+
+    const handleAlert = () => {
+        if (selectedBusiness != null) {
+            setOpenAlert(false);
+            onSubmit(currentLocation, selectedBusiness, Boolean(businessZone != null));
+        }
     }
 
   return (
@@ -186,10 +200,17 @@ function ZoningPage({ mapsKey, accessToken, onSubmit }: Props) {
 
                 <ParallaxBox>
                     <Image src="/icons/malabon_logo.png" alt='malabon_logo' width={120} height={120} />
-                    <Typography component="h1" variant="body1" sx={{ maxWidth: { xs: 250, md: 400 }, mt: 4, fontSize: { xs: 14, md: 18 } }} color="white" align="center">
-                        Your business location is within the allowed use for <strong>{constantCase(businessZone)}</strong>, 
-                        pursuant to Ordinance No. 538, Series of 2019. Please select your business type from the allowed businesses below for this zone.
-                    </Typography>
+                    {businessZone ? (
+                        <Typography component="h1" variant="body1" sx={{ maxWidth: { xs: 250, md: 400 }, mt: 4, fontSize: { xs: 14, md: 18 } }} color="white" align="center">
+                            Your business location is within the allowed use for <strong>{constantCase(businessZone)}</strong>, 
+                            pursuant to Ordinance No. 538, Series of 2019. Please select your business type from the allowed businesses below for this zone.
+                        </Typography>
+                    ) : (
+                        <Typography component="h1" variant="body1" sx={{ maxWidth: { xs: 250, md: 400 }, mt: 4, fontSize: { xs: 14, md: 18 } }} color="white" align="center">
+                            Your business location is not yet in the current database.
+                            Please select your business type from the businesses below for this zone.
+                        </Typography>
+                    )}
                 </ParallaxBox>
         
                 <ZoningBusiness 
@@ -212,6 +233,11 @@ function ZoningPage({ mapsKey, accessToken, onSubmit }: Props) {
                 </Box>
             </>
         </Collapse>
+        <ZoningAlert 
+            open={openAlert}
+            handleClose={() => setOpenAlert(false)}
+            handleSubmit={handleAlert}
+        />
     </>
   );
 }

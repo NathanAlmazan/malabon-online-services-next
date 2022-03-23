@@ -42,6 +42,7 @@ function ContactInformation(props: Props) {
                             required
                             name="mobile"
                             label="Phone Number"
+                            inputProps={{ max: 9999999999 }}
                             value={mobile ? mobile : ''}
                             type="number"
                             onChange={editable ? handleValueChange : undefined}

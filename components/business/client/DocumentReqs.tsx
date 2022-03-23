@@ -27,7 +27,7 @@ const FileUploadBox = styled(Box)({
     overflowY: 'auto'
 });
 
-type DocumentTypes = "Proof of Registration" | "Tax Incentive Certificate" | "Contract of Lease" | "Tax Declaration" | "Other Requirements";
+type DocumentTypes = "Proof of Registration" | "Tax Incentive Certificate" | "Contract of Lease" | "Tax Declaration" | "Other Requirements" | "Zone Appeal";
 
 interface Props {
     formData: FormData;
@@ -36,12 +36,13 @@ interface Props {
     removeFile: (fileName: string) => void;
     editable: boolean;
     formFiles: BusinessFiles;
+    approved: boolean;
 }
 
 function DocumentReqs(props: Props) {
-    const { formData, handleCheckChange, editable, formFiles, addFormFiles, removeFile } = props;
+    const { formData, handleCheckChange, editable, formFiles, addFormFiles, removeFile, approved } = props;
     const { taxIncentive, rented } = formData;
-    const { otherFiles, registrationFile, rentedFile, taxIncentiveFile } = formFiles;
+    const { otherFiles, registrationFile, rentedFile, taxIncentiveFile, zoneAppeal } = formFiles;
 
     const handleTaxIncentiveChange = ((event: React.SyntheticEvent<Element, Event>, checked: boolean) => {
         handleCheckChange("taxIncentive", checked);
@@ -66,6 +67,12 @@ function DocumentReqs(props: Props) {
     const handleRegistrationFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
             addFormFiles(event.target.files[0], "Proof of Registration");
+        }
+    }
+
+    const handleZoneFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files) {
+            addFormFiles(event.target.files[0], "Zone Appeal");
         }
     }
 
@@ -196,6 +203,43 @@ function DocumentReqs(props: Props) {
                                     View Proof of Registration
                             </Button>
                         </Grid>
+                    )}
+                    {!approved && (
+                        <>
+                        <Grid item xs={12} md={12}>
+                            <Divider color="red" />
+                        </Grid>
+                        <Grid item xs={12} md={7}>
+                            <FormLabel>Please upload your zone appeal</FormLabel>
+                        </Grid>
+                        {editable ? (
+                            <Grid item xs={12} md={5}>
+                                <Button
+                                    variant="outlined"
+                                    component="label"
+                                    startIcon={zoneAppeal ? <DownloadDoneIcon /> : <UploadIcon />}
+                                    >
+                                        {zoneAppeal ? "Uploaded" : "Upload Your Zone Appeal"}
+                                        <input 
+                                            type="file" 
+                                            accept="image/png, image/jpeg, image/jpg, application/pdf"
+                                            onChange={handleZoneFileChange}
+                                            hidden 
+                                        />
+                                </Button>
+                            </Grid>
+                        ) : (
+                            <Grid item xs={12} md={5}>
+                                <Button
+                                    variant="outlined"
+                                    onClick={() => handleViewSubmittedFile(zoneAppeal?.fileURL)}
+                                    startIcon={<DownloadDoneIcon />}
+                                    >
+                                        View Zone Appeal
+                                </Button>
+                            </Grid>
+                        )}
+                        </>
                     )}
                     <Grid item xs={12} md={12}>
                         <Divider color="red" />

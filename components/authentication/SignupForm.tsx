@@ -7,6 +7,8 @@ import MenuItem from '@mui/material/MenuItem';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -39,6 +41,7 @@ interface Props {
 
 export default function SignupForm({ email, firstName, lastName, gender, mobile, password, error, handleText, handleSubmit, genderChange }: Props) {
     const [visible, setVisible] = useState<boolean>(false);
+    const [agreeInTerms, setAgreeInTerms] = useState<boolean>(true);
     
   return (
     <Stack component="form" onSubmit={handleSubmit}>
@@ -145,15 +148,16 @@ export default function SignupForm({ email, firstName, lastName, gender, mobile,
                     }}
                 />
             </Grid>
+            <Grid item xs={12}>
+                <FormControlLabel
+                    control={<Checkbox checked={agreeInTerms} onChange={() => setAgreeInTerms(!agreeInTerms)} color="primary" />}
+                    label={<p>I agree to the <Link href="/termsAndConditions"><a style={{ color: "#ff558f" }}>Terms and Conditions</a></Link> of Malabon Online Services.</p>}
+                />
+                {!agreeInTerms && <span style={{ color: "#ff558f", marginLeft: 30, fontStyle: 'italic', fontSize: 12 }}>*This field is required.</span>}
+            </Grid>
         </Grid>
 
-        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 4, mt: 2 }}>
-
-          <Link variant="subtitle2" href="/signin">
-            Already have an account?
-          </Link>
-        </Stack>
-        
+        <Stack direction="column" spacing={1}>        
        
         <Button
             type="submit"
@@ -162,8 +166,13 @@ export default function SignupForm({ email, firstName, lastName, gender, mobile,
         >
             Sign Up
         </Button>
+
+        <Link variant="subtitle2" href="/signin">
+            Already have an account?
+          </Link>
+        </Stack>
     
-        <Copyright sx={{ mt: 5 }} />
+        <Copyright sx={{ mt: 3 }} />
     </Stack>
   )
 }
