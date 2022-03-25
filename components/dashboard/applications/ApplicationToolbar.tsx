@@ -12,7 +12,7 @@ import { alpha } from '@mui/material/styles';
 import { Search as SearchIcon } from '../../../icons/search';
 import InboxMenu from "./InboxMenu";
 
-type Filter = "assessment" | "approved" | "disapproved" | "release" | "all";
+type Filter = "assessment" | "approved" | "new" | "renew" | "building" | "all";
 
 interface EnhancedTableToolbarProps {
     numSelected: number;

@@ -93,7 +93,7 @@ const BuildingRequests = ({ forms, viewAll }: Props) => (
                   </TableCell>
                   <TableCell>
                     <SeverityPill color={form.approved ? 'success' : 'warning'}>
-                      {form.approved ? 'Release' : 'On Going'}
+                      {form.approved ? 'Release' : 'Assessing'}
                     </SeverityPill>
                   </TableCell>
                 </TableRow>

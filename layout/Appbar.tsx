@@ -58,13 +58,63 @@ function Appbar({ matches, open, toggleDrawer }: Props) {
     const router = useRouter();
     const { currentUser } = useAuth();
     const [notifications, setNotifications] = useState<Notifications[]>([]);
+    const [admin, setAdmin] = useState<boolean>(false);
 
     useEffect(() => {
         const getNotifications = async () => {
-            const result = await apiGetRequest('/notifications/user', currentUser?.accessToken);
-            const notifList = result.data as Notifications[]; 
+            const admin = await apiGetRequest('/accounts/admin/search', currentUser?.accessToken);
 
-            setNotifications(state => notifList);
+            if (admin.status > 300) {
+                const result = await apiGetRequest('/notifications/user', currentUser?.accessToken);
+                const notifList = result.data as Notifications[]; 
+    
+                setNotifications(state => notifList);
+            } else {
+                const forms = await apiGetRequest('/business/new/approve/forms', currentUser?.accessToken);
+                const renewForms = await apiGetRequest('/business/renew/requests', currentUser?.accessToken);
+                const buildingForms = await apiGetRequest('/building/assess/forms', currentUser?.accessToken);
+                const business = forms.data as unknown[];
+                const renew = renewForms.data as unknown[];
+                const building = buildingForms.data as unknown[];
+
+                let notificationList: Notifications[] = [];
+
+                if (business.length > 0 ) {
+                    notificationList.push({
+                        notifDesc: `${business.length} new business applications need approval.`,
+                        notifSubject: "New Business Applications",
+                        createdAt: new Date(),
+                        notifId: 1,
+                        read: false,
+                        userId: 0
+                    })
+                }
+
+                if (renew.length > 0 ) {
+                    notificationList.push({
+                        notifDesc: `${renew.length} renew business applications need approval.`,
+                        notifSubject: "Renew Business Applications",
+                        createdAt: new Date(),
+                        notifId: 2,
+                        read: false,
+                        userId: 0
+                    })
+                }
+
+                if (building.length > 0 ) {
+                    notificationList.push({
+                        notifDesc: `${building.length} building permit applications need approval.`,
+                        notifSubject: "Building Permit Applications",
+                        createdAt: new Date(),
+                        notifId: 3,
+                        read: false,
+                        userId: 0
+                    })
+                }
+
+                setNotifications(state => notificationList);
+            }
+            
         }
         if (currentUser) {
             getNotifications();

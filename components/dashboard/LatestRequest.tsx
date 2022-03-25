@@ -11,12 +11,11 @@ import {
   TableHead,
   TableRow,
   Avatar,
-  Typography,
-  CircularProgress  
+  Typography
 } from '@mui/material';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import Image from 'next/image';
-import CircularProgressWithLabel from "../StyledCircularProgress";
+import { SeverityPill } from './SeverityPill';
 
 type BusinessApproval = {
   approvalId: number;
@@ -62,6 +61,7 @@ interface Props {
     addresses: BusinessAdresses[];
     TIN: string;
     owners: BusinessOwners[];
+    approved: boolean;
     approvals: BusinessApproval[];
   }[]
 }
@@ -136,7 +136,9 @@ const LatestRequest = ({ forms, viewAll }: Props) => (
                     {new Date(form.submittedAt).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
                   </TableCell>
                   <TableCell>
-                    <CircularProgressWithLabel value={(form.approvals.length / 6) * 100} />
+                    <SeverityPill color={form.approved ? 'success' : 'warning'}>
+                      {form.approved ? 'Release' : 'Assessing'}
+                    </SeverityPill>
                   </TableCell>
                 </TableRow>
               )})}

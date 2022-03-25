@@ -158,6 +158,9 @@ export default function BuildingForm(props: Props) {
             setFormFiles({ ...formFiles, engineerLicense: { documentType: documentType, fileName: file.name, fileData: file } });
         } else if (documentType == "Blueprint") {
             setFormFiles({ ...formFiles, blueprint: { documentType: documentType, fileName: file.name, fileData: file } });
+        } 
+        else if (documentType == "Title") {
+            setFormFiles({ ...formFiles, title: { documentType: documentType, fileName: file.name, fileData: file } });
         } else {
             let buildingFiles = formFiles.otherFiles;
             buildingFiles.push({ documentType: documentType, fileName: file.name, fileData: file })
@@ -209,16 +212,19 @@ export default function BuildingForm(props: Props) {
         let buildingFiles: FormFiles[] = [];
         let licenseFile = formFiles.engineerLicense;
         let blueprintFile = formFiles.blueprint;
+        let titleFile = formFiles.title;
 
-        if (!licenseFile || !blueprintFile) {
+        if (!licenseFile || !blueprintFile || !titleFile) {
             setLoading(false);
             return setError("Incomplete requirements.");
         } 
 
         licenseFile.fileURL = await uploadFileToFirebase(account.account.uid, licenseFile.fileData as File, licenseFile.fileName);
         blueprintFile.fileURL = await uploadFileToFirebase(account.account.uid, blueprintFile.fileData as File, blueprintFile.fileName);
+        titleFile.fileURL = await uploadFileToFirebase(account.account.uid, titleFile.fileData as File, titleFile.fileName);
         buildingFiles.push(licenseFile);
         buildingFiles.push(blueprintFile);
+        buildingFiles.push(titleFile);
 
         for (let x=0; x < formFiles.otherFiles.length; x++) {
             let currentFile = formFiles.otherFiles[x];

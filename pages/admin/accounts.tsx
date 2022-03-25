@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
@@ -10,18 +10,25 @@ import InputAdornment from "@mui/material/InputAdornment";
 import SvgIcon from "@mui/material/SvgIcon";
 import IconButton from "@mui/material/IconButton";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import Divider from "@mui/material/Divider";
 import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
+import DeleteIcon from '@mui/icons-material/Delete';
+import Stack from "@mui/material/Stack";
+import Tooltip from "@mui/material/Tooltip";
+import CircularProgress from '@mui/material/CircularProgress';
+import Snackbar from '@mui/material/Snackbar';
 import { Search as SearchIcon } from '../../icons/search';
 import dynamic from 'next/dynamic';
+import CloseIcon from '@mui/icons-material/Close';
 import { useAuth } from '../../hocs/FirebaseProvider';
 import { apiGetRequest, apiPostRequest } from '../../hocs/axiosRequests';
 import { capitalCase } from "change-case";
 
 const Copyright = dynamic(() => import("../../components/Copyright"));
 const ProfileCard = dynamic(() => import("../../components/accounts/ProfileCard"));
-const Productivity = dynamic(() => import("../../components/accounts/Productivity"));
-const Assessed = dynamic(() => import("../../components/accounts/Assessed"));
+const AccountCard = dynamic(() => import("../../components/dashboard/accounts/AccountCard"));
+const AccountToolbar = dynamic(() => import("../../components/accounts/AccountToolbar"));
 
 interface AdminAccount {
   adminAccount: {
@@ -55,13 +62,15 @@ function getTitle(role: string) {
     case "TRSY": 
       return "Treasury";
     case "BPLO": 
-      return "Release"
+      return "Release";
+    case "PZO": 
+      return "Zoning Clearance"
     default:
-      return "Zoning Clearance";
+      return role;
   }
 }
 
-const clearance = ["PZO", "OLBO", "CHO", "CENRO", "OCMA", "BFP", "TRSY", "BPLO"];
+const clearance = ["PZO", "OLBO", "CHO", "CENRO", "OCMA", "BFP", "TRSY", "BPLO", "FENCING", "ARCHITECTURAL", "STRUCTURAL", "ELECTRICAL", "MECHANICAL", "SANITARY", "PLUMBING", "INTERIOR", "ELECTRONICS"];
 
 export default function AdminAccount() {
   const { currentUser } = useAuth();
@@ -69,10 +78,28 @@ export default function AdminAccount() {
   const [notfound, setNotfound] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<AdminAccount>();
   const [userRoles, setUserRoles] = useState<readonly string[]>([]);
+  const [allAccounts, setAllAccounts] = useState<AdminAccount[]>([]);
+  const [adminSearch, setAdminSearch] = useState<string>("");
+  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
+
+  useEffect(() => {
+    const getAllAccounts = async () => {
+      const accounts = await apiGetRequest('/accounts/admin/all', currentUser?.accessToken);
+      setAllAccounts(state => accounts.data as AdminAccount[]);
+    }
+
+    if (currentUser) {
+      getAllAccounts();
+    }
+  }, [currentUser])
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(event.target.value);
     setNotfound(false);
+  }
+
+  const handleAdminChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAdminSearch(event.target.value);
   }
 
   const handleSearchAccount = async (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -84,6 +111,11 @@ export default function AdminAccount() {
     } else {
       setNotfound(true);
     }
+  }
+
+  const handleSelectAdmin = (account: AdminAccount) => {
+    setUserInfo(account);
+    setUserRoles(account.roles);
   }
 
   const handleCheck = (event: React.MouseEvent<unknown>, role: string) => {
@@ -109,6 +141,8 @@ export default function AdminAccount() {
   const handleCreateSuperUser = async () => {
     if (userInfo) {
       await apiGetRequest('/accounts/superuser/create/' + userInfo.adminAccount.uid, currentUser?.accessToken);
+      setUserInfo(undefined);
+      setUserRoles([]);
     }
   }
 
@@ -125,7 +159,8 @@ export default function AdminAccount() {
         roles: userRoles
       }), currentUser?.accessToken);
 
-      console.log(result);
+      setUserInfo(undefined);
+      setUserRoles([]);
     }
   }
 
@@ -135,9 +170,36 @@ export default function AdminAccount() {
         uid: userInfo.adminAccount.uid,
         roles: userRoles
       }), currentUser?.accessToken);
+
+      setUserInfo(undefined);
+      setUserRoles([]);
     }
   }
 
+  const deleteAdmin = async () => {
+    if (userInfo) {
+      await apiPostRequest('/accounts/admin/remove/' + userInfo.adminAccount.uid, JSON.stringify({
+        uid: userInfo.adminAccount.uid,
+        roles: userRoles
+      }), currentUser?.accessToken);
+
+      setUserInfo(undefined);
+      setUserRoles([]);
+    }
+  }
+
+  const action = (
+    <React.Fragment>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={() => setOpenSnackbar(false)}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </React.Fragment>
+  );
 
   return (
     <>
@@ -189,13 +251,21 @@ export default function AdminAccount() {
           />
         </Grid>
         <Grid item xs={12} md={8}>
-          <Typography component="h1" fontWeight="bold" color="secondary" variant="h5" textAlign="left" sx={{ mb: 2 }}>
-            User Roles
-          </Typography>
+          <Stack direction="row" justifyContent="space-between" sx={{ mb: 4 }}>
+            <Typography component="h1" fontWeight="bold" color="secondary" variant="h5" textAlign="left" sx={{ mb: 2 }}>
+              User Roles
+            </Typography>
+            <IconButton onClick={deleteAdmin} disabled={Boolean(!userInfo || !userInfo.adminAccount.officer)}>
+              <Tooltip title="Remove Admin">
+                <DeleteIcon fontSize="medium" />
+              </Tooltip>
+            </IconButton>
+          </Stack>
+          <Divider />
           <Grid container spacing={2} justifyContent="flex-end">
             {clearance.map(role => (
               <Grid item xs={6} md={4} key={role}>
-                <FormControlLabel control={<Checkbox checked={userRoles.includes(role)} onClick={(event) => handleCheck(event, role)} disabled={!userInfo} />} label={getTitle(role)} />
+                <FormControlLabel control={<Checkbox checked={userRoles.includes(role)} onClick={(event) => handleCheck(event, role)} disabled={!userInfo} />} label={capitalCase(getTitle(role))} />
             </Grid>
             ))}
             <Grid item xs={6} md={5}>
@@ -247,8 +317,43 @@ export default function AdminAccount() {
         </Grid>
        </Grid>
       </Paper>
+      <Box sx={{ mt: 5, mb: 3 }}>
+        <Typography component="h1" fontWeight="bold" color="primary" variant="h5" textAlign="left">
+          Admin Accounts
+        </Typography>
+      </Box>
+      <AccountToolbar 
+        searchValue={adminSearch}
+        handleChangeSearch={handleAdminChange}
+      />
+      <Grid container spacing={2} sx={{ mt: 2 }}>
+        {allAccounts != null && allAccounts.filter(account => account.adminAccount.firstName.includes(adminSearch)).map(account => (
+          <Grid item xs={12} md={3} key={account.adminAccount.uid}>
+            <AccountCard account={account} select={handleSelectAdmin} />
+          </Grid>
+        ))}
+        {Boolean(!allAccounts || allAccounts.length == 0) && (
+          <Box sx={{ 
+            width: '100%',
+            height: 300,
+            display: 'flex',
+            justifyContent: 'center',
+            alignCenter: 'center'
+          }}>
+            <CircularProgress />
+          </Box>
+        )}
+      </Grid>
       <Copyright />
     </Container>
+
+    <Snackbar
+      open={openSnackbar}
+      autoHideDuration={6000}
+      onClose={() => setOpenSnackbar(false)}
+      message="User role was updated successfully!"
+      action={action}
+    />
     </>
   )
 }

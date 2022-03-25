@@ -53,7 +53,7 @@ function ZoningBusiness({ businessTypes, selectedBusiness, error, onSelect }: Pr
             </Box>
 
             <Grid container spacing={2} sx={{ maxHeight: 400, overflowY: 'auto', p: 2, bgcolor: theme.palette.secondary.light }}>
-                {filteredList.map(businessType => {
+                {filteredList.sort((a, b) => a.typeName.localeCompare(b.typeName)).map(businessType => {
                     const typeId = selectedBusiness != null ? selectedBusiness.typeId : 0;
                     const selected = Boolean(typeId == businessType.typeId);
 

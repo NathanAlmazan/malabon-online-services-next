@@ -13,7 +13,7 @@ const MenuPopover = dynamic(() => import("../../MenuPopover"));
 
 // ----------------------------------------------------------------------
 
-type Filter = "assessment" | "approved" | "disapproved" | "release" | "all";
+type Filter = "assessment" | "approved" | "new" | "renew" | "building" | "all";
 
 interface Props {
     selectFilter: (value: Filter) => void;
@@ -39,12 +39,16 @@ export default function InboxMenu(props: Props) {
       label: "Approved"
     },
     {
-      value: "disapproved",
-      label: "Disapproved"
+      value: "new",
+      label: "New Business"
     },
     {
-      value: "release",
-      label: "On Relase"
+      value: "renew",
+      label: "Renew Business"
+    },
+    {
+      value: "building",
+      label: "Building Permit"
     },
   ]
 

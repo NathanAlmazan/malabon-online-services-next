@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import Image from 'next/image';
-import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
+import CircularProgress from "../../../StyledCircularProgress";
 import { useRouter } from "next/router";
 import PaymentVerifyDialog from "./PaymentVerify";
 
@@ -193,7 +193,7 @@ const PaymentTable = (props: Props) => {
                     {new Date(form.submittedAt).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
                   </TableCell>
                   <TableCell>
-                    <LinearProgress value={(form.approvals.length / 6) * 100} variant="determinate" color="primary" />
+                    <CircularProgress value={(form.approvals.length / 6) * 100} color="primary" />
                   </TableCell>
                 </TableRow>
               )})}
@@ -215,7 +215,7 @@ const PaymentTable = (props: Props) => {
                         height={300}
                       />  
                       <Typography variant="h6" sx={{ mt: 2 }}>
-                        All Renew Business Forms are assessed successfully
+                        All New Business Payments are assessed successfully
                       </Typography>
                     </Box>
                   </TableCell>

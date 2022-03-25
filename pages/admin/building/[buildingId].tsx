@@ -173,6 +173,7 @@ export default function BuildingForm(props: Props) {
         setFormFiles(state => ({
             blueprint: form.files.find(file => file.documentType == "Blueprint"),
             engineerLicense: form.files.find(file => file.documentType == "License"),
+            title: form.files.find(file => file.documentType == "Title"),
             otherFiles: form.files.filter(file => file.documentType == "Other Requirements")
         }))
 

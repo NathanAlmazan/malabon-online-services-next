@@ -45,6 +45,7 @@ export type FormFiles = {
 export interface BuildingRequirements {
     engineerLicense?: FormFiles;
     blueprint?: FormFiles;
+    title?: FormFiles;
     otherFiles: FormFiles[];
 }
 

@@ -65,45 +65,45 @@ type AdminAccount = {
   } 
 }
 
+type AdminDashboard = {
+  business: {
+    businessId: number;
+    businessName: string;
+    submittedAt: Date;
+    addresses: BusinessAdresses[];
+    TIN: string;
+    owners: BusinessOwners[];
+    approved: boolean;
+    approvals: BusinessApproval[];
+  }[],
+  renew: {
+    business: {
+      businessId: number;
+      businessName: string;
+      TIN: string;
+      certificateId: string;
+    },
+    renewalId: number;
+    businessId: number | null;
+    permitNumber: string | null;
+    receiptNumber: string | null;
+    renewAt: Date;
+    completed: boolean;
+    businessName: string | null;
+    certificateFile: string | null;
+  }[],
+  building: SubmittedForm[],
+  productivity: number
+}
+
 interface Props {
     accessToken: string;
     account: AdminAccount,
-    newBusiness: {
-      forms: {
-        businessId: number;
-        businessName: string;
-        submittedAt: Date;
-        addresses: BusinessAdresses[];
-        TIN: string;
-        owners: BusinessOwners[];
-        approvals: BusinessApproval[];
-      }[]
-    },
-    renewForms: {
-      forms: {
-        business: {
-          businessId: number;
-          businessName: string;
-          TIN: string;
-          certificateId: string;
-        },
-        renewalId: number;
-        businessId: number | null;
-        permitNumber: string | null;
-        receiptNumber: string | null;
-        renewAt: Date;
-        completed: boolean;
-        businessName: string | null;
-        certificateFile: string | null;
-      }[];
-    },
-    buildingForms: {
-      forms: SubmittedForm[];
-    }
+    adminDashboard: AdminDashboard
 }
 
 export default function AdminDashboard(props: Props) {
-  const { account, newBusiness, renewForms, buildingForms } = props;
+  const { account, adminDashboard } = props;
   const theme = useTheme();
   const router = useRouter();
 
@@ -152,7 +152,7 @@ export default function AdminDashboard(props: Props) {
             xs={12}
           >
             <NewBusinessStats 
-              value={newBusiness.forms.length}
+              value={adminDashboard.business.length}
             />
           </Grid>
           <Grid
@@ -164,7 +164,7 @@ export default function AdminDashboard(props: Props) {
           >
             <TotalCustomers 
               title="BUSINESS RENEWAL"
-              value={renewForms.forms.length}
+              value={adminDashboard.renew.length}
             />
           </Grid>
           <Grid
@@ -176,7 +176,7 @@ export default function AdminDashboard(props: Props) {
           >
              <TotalCustomers 
               title="BUILDING PERMIT"
-              value={60}
+              value={adminDashboard.building.length}
             />
           </Grid>
           <Grid
@@ -187,7 +187,7 @@ export default function AdminDashboard(props: Props) {
             xs={12}
           >
             <TasksProgress 
-              value={42}
+              value={Math.floor((adminDashboard.productivity / 100) * 100)}
             />
           </Grid>
           <Grid
@@ -198,7 +198,7 @@ export default function AdminDashboard(props: Props) {
             xs={12}
           >
             <LatestRequest 
-              forms={newBusiness.forms}
+              forms={adminDashboard.business}
               viewAll={() => handleRedirect('/admin/business/register')}
             />
           </Grid>
@@ -210,7 +210,7 @@ export default function AdminDashboard(props: Props) {
             xs={12}
           >
             <RenewRequest 
-              forms={renewForms.forms}
+              forms={adminDashboard.renew}
               viewAll={() => handleRedirect('/admin/business/renew')}
             />
           </Grid>
@@ -222,7 +222,7 @@ export default function AdminDashboard(props: Props) {
             xs={12}
           >
             <BuildingRequest 
-              forms={buildingForms.forms}
+              forms={adminDashboard.building}
               viewAll={() => handleRedirect('/admin/building')}
             />
           </Grid>
@@ -248,9 +248,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   const result = await apiGetRequest('/accounts/admin/search', data.loggedInUser);
-  const forms = await apiGetRequest('/business/new/approve/forms', data.loggedInUser);
-  const renewForms = await apiGetRequest('/business/renew/requests', data.loggedInUser);
-  const buildingForms = await apiGetRequest('/building/assess/forms', data.loggedInUser);
+  const adminDashBoard = await apiGetRequest('/notifications/admin', data.loggedInUser);
 
   if (result.status > 300) {
     return {
@@ -265,15 +263,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       accessToken: data.loggedInUser,
       account: result.data,
-      newBusiness: {
-        forms: forms.data,
-      },
-      renewForms: {
-        forms: renewForms.data
-      },
-      buildingForms: {
-        forms: buildingForms.data
-      }
+      adminDashboard: adminDashBoard.data
     }
   }
 }

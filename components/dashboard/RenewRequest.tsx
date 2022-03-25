@@ -100,7 +100,7 @@ const LatestRequest = ({ forms, viewAll }: Props) => (
                   </TableCell>
                   <TableCell>
                     <SeverityPill color={form.certificateFile ? 'success' : 'warning'}>
-                      {form.certificateFile ? 'Release' : 'On Going'}
+                      {form.certificateFile ? 'Release' : 'Assessing'}
                     </SeverityPill>
                   </TableCell>
                 </TableRow>

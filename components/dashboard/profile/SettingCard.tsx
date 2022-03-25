@@ -8,9 +8,12 @@ import { Grid } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
-import Button from "@mui/material/Button";
+import LoadingButton from "@mui/lab/LoadingButton";
 import Typography from "@mui/material/Typography";
 import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from '@mui/icons-material/Close';
+import Snackbar from "@mui/material/Snackbar";
 import { apiPostRequest } from "../../../hocs/axiosRequests";
 
 type Accounts = {
@@ -35,6 +38,7 @@ interface Props {
 
 export default function SettingsCard(props: Props) {
     const { account, token } = props;
+    const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
     const [formData, setFormData] = useState({
         firstName: account.firstName,
         middleName: account.middleName,
@@ -42,6 +46,7 @@ export default function SettingsCard(props: Props) {
         gender: account.gender,
         phoneNumber: account.phoneNumber
     });
+    const [loading, setLoading] = useState<boolean>(false);
 
     const { firstName, middleName, lastName, gender, phoneNumber } = formData;
 
@@ -56,6 +61,7 @@ export default function SettingsCard(props: Props) {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
+        setLoading(true);
         const body = JSON.stringify({
             firstName: firstName,
             middleName: middleName,
@@ -66,10 +72,23 @@ export default function SettingsCard(props: Props) {
         })
 
         const updateAccount = await apiPostRequest('/accounts/update/' + account.uid, body, token);
-        console.log(updateAccount);
+        setLoading(false);
+        setOpenSnackbar(true);
     }
 
- 
+    const action = (
+      <React.Fragment>
+        <IconButton
+          size="small"
+          aria-label="close"
+          color="inherit"
+          onClick={() => setOpenSnackbar(false)}
+        >
+          <CloseIcon fontSize="small" />
+        </IconButton>
+      </React.Fragment>
+    );
+
   return (
     <Card variant="outlined" sx={{ height: "100%", width: "100%" }}>
       <Typography variant="h4" sx={{ p: 2 }}>
@@ -172,19 +191,27 @@ export default function SettingsCard(props: Props) {
                 item
                 xs={6}
               >
-                <Button
+                <LoadingButton
                   sx={{ p: "1rem 2rem", my: 2, height: "3rem" }}
                   type="submit"
                   size="large"
+                  loading={loading}
                   variant="contained"
                   color="secondary"
                 >
                   Update
-                </Button>
+                </LoadingButton>
               </Grid>
             </Grid>
         </CardContent>
       </form>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+        message="Your profile was updated successfully!"
+        action={action}
+      />
     </Card>
   );
 }

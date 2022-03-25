@@ -31,11 +31,6 @@ export default function AccountPopover() {
       label: 'Profile',
       icon: PersonIcon,
       linkTo: `/profile/` + currentUser?.user.uid
-    },
-    {
-        label: 'Settings',
-        icon: SettingsIcon,
-        linkTo: `/employees/profile`
     }
   ];
 

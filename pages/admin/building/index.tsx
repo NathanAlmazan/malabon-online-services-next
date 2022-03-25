@@ -142,6 +142,7 @@ export default function BuildingPermit(props: Props) {
               />
               <PaymentTable 
                   forms={buildingForms.paymentForms}
+                  searchValue={searchValue}
               />
             </Stack>
           </motion.div>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -31,10 +31,11 @@ const getInitials = (name = '') => name
 
 interface Props {
   forms: SubmittedForm[];
+  searchValue: string;
 }
 
 const PaymentTable = (props: Props) => {
-  const { forms } = props;
+  const { forms, searchValue } = props;
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
@@ -44,6 +45,10 @@ const PaymentTable = (props: Props) => {
     buildingId: 0
   });
   const [updatedForms, setUpdatedForms] = useState(forms);
+
+  useEffect(() => {
+    setUpdatedForms(state => forms.filter(form => form.buildingId.toString().includes(searchValue)));
+  }, [forms, searchValue]);
 
   const handleLimitChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setLimit(parseInt(event.target.value));
@@ -78,6 +83,9 @@ const PaymentTable = (props: Props) => {
                 <TableRow>
                   <TableCell>
                       Owner
+                  </TableCell>
+                  <TableCell>
+                     Building ID
                   </TableCell>
                   <TableCell>
                       Scope of Work
@@ -123,6 +131,9 @@ const PaymentTable = (props: Props) => {
                         {buildingOwner}
                       </Typography>
                     </Box>
+                  </TableCell>
+                  <TableCell>
+                    {'0000' + form.buildingId}
                   </TableCell>
                   <TableCell>
                     {form.scopeOfWork}

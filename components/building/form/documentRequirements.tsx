@@ -37,7 +37,7 @@ interface Props {
 
 function RequirementsForm(props: Props) {
     const { engineer, addFormFiles, editable, formFiles, handleTextChange, removeFile } = props;
-    const { blueprint, engineerLicense, otherFiles } = formFiles;
+    const { blueprint, engineerLicense, otherFiles, title } = formFiles;
 
     const handleLicenseChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
@@ -48,6 +48,12 @@ function RequirementsForm(props: Props) {
     const handleBlueprintChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files) {
             addFormFiles(event.target.files[0], "Blueprint");
+        }
+    }
+
+    const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files) {
+            addFormFiles(event.target.files[0], "Title");
         }
     }
 
@@ -138,6 +144,39 @@ function RequirementsForm(props: Props) {
                                 startIcon={<DownloadDoneIcon />}
                                 >
                                     {"View Blueprint"}
+                            </Button>
+                        </Grid>
+                   )}
+<                   Grid item xs={12} md={12}>
+                        <Divider color="red" />
+                    </Grid>
+                    <Grid item xs={12} md={7}>
+                        <FormLabel>Please upload your land title</FormLabel>
+                    </Grid>
+                    {editable ? (
+                        <Grid item xs={12} md={5}>
+                            <Button
+                                variant="outlined"
+                                component="label"
+                                startIcon={blueprint ? <DownloadDoneIcon /> : <UploadIcon />}
+                                >
+                                    {blueprint ? "Uploaded" : "Upload Land Title"}
+                                    <input 
+                                        type="file" 
+                                        accept="image/png, image/jpeg, image/jpg, application/pdf"
+                                        onChange={handleTitleChange}
+                                        hidden 
+                                    />
+                            </Button>
+                        </Grid>
+                   ) : (
+                        <Grid item xs={12} md={5}>
+                            <Button
+                                variant="outlined"
+                                onClick={() => handleViewSubmittedFile(title?.fileURL)}
+                                startIcon={<DownloadDoneIcon />}
+                                >
+                                    {"View Land Title"}
                             </Button>
                         </Grid>
                    )}

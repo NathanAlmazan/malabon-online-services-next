@@ -164,10 +164,11 @@ type BusinessApproval = {
 interface Props {
     approvals: BusinessApproval[];
     businessId: number;
+    inbox?: boolean;
 }
 
 export default function VerticalLinearStepper(props: Props) {
-  const { approvals, businessId } = props; 
+  const { approvals, businessId, inbox } = props; 
   const router = useRouter();
   const [activeStep, setActiveStep] = React.useState(approvals.length - 1);
   const [emptyStep, setEmptyStep] = React.useState<string[]>([]);
@@ -283,7 +284,7 @@ export default function VerticalLinearStepper(props: Props) {
                     <Typography variant="subtitle1">
                         <strong style={{ color: '#E91E63', fontSize: 20 }}>Congratulations!</strong> Your new business application was approved by all of the departments. You can now proceed to the payment of tax.
                     </Typography>
-                    <Button onClick={() => handleRedirect('/dashboard/business/new/payment/' + businessId)} variant="contained" endIcon={<ArrowForwardIcon />}>
+                    <Button onClick={() => handleRedirect(inbox ? '/dashboard/business/new/assessment/' + businessId : '/dashboard/business/new/payment/' + businessId)} variant="contained" endIcon={<ArrowForwardIcon />}>
                         Proceed
                     </Button>
                 </Stack>

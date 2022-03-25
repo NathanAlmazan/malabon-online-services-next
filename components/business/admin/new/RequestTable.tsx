@@ -14,9 +14,9 @@ import {
   Typography
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import CircularProgress from '@mui/material/CircularProgress';
 import Image from 'next/image';
 import { useRouter } from "next/router";
+import CircularProgress from "../../../StyledCircularProgress";
 import dynamic from 'next/dynamic';
 
 const ClaimDialog = dynamic(() => import("./ClaimDialog"));
@@ -200,7 +200,7 @@ const RequestListResults = (props: Props) => {
                     {new Date(form.submittedAt).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
                   </TableCell>
                   <TableCell>
-                    <CircularProgress value={(form.approvals.length / 6) * 100} variant="determinate" color="primary" />
+                    <CircularProgress value={(form.approvals.length / 6) * 100} color="primary" />
                   </TableCell>
                 </TableRow>
               )})}
@@ -222,7 +222,7 @@ const RequestListResults = (props: Props) => {
                         height={300}
                       />  
                       <Typography variant="h6" sx={{ mt: 2 }}>
-                        All Renew Business Forms are assessed successfully
+                        All New Business Forms are assessed successfully
                       </Typography>
                     </Box>
                   </TableCell>

@@ -44,13 +44,9 @@ const RequestListResults = (props: Props) => {
   const [currentId, setCurrentId] = useState<number>(0);
   const [updatedForms, setUpdatedForms] = useState(forms);
 
-//   useEffect(() => {
-//     if (fire !== undefined) {
-//       setUpdatedForms(state => forms.filter(form => form.trackNumber?.toString().includes(searchValue)));
-//     } else {
-//       setUpdatedForms(state => forms.filter(form => form.TIN.includes(searchValue)));
-//     }
-//   }, [forms, fire, searchValue]);
+  useEffect(() => {
+    setUpdatedForms(state => forms.filter(form => form.buildingId.toString().includes(searchValue)));
+  }, [forms, searchValue]);
 
   const handleLimitChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setLimit(parseInt(event.target.value));
@@ -77,6 +73,9 @@ const RequestListResults = (props: Props) => {
               <TableRow>
                 <TableCell>
                      Owner
+                </TableCell>
+                <TableCell>
+                     Building ID
                 </TableCell>
                 <TableCell>
                     Scope of Work
@@ -122,6 +121,9 @@ const RequestListResults = (props: Props) => {
                         {buildingOwner}
                       </Typography>
                     </Box>
+                  </TableCell>
+                  <TableCell>
+                    {'0000' + form.buildingId}
                   </TableCell>
                   <TableCell>
                     {form.scopeOfWork}

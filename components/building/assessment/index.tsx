@@ -176,10 +176,11 @@ const clearance = ["FENCING", "ARCHITECTURAL", "STRUCTURAL", "ELECTRICAL", "MECH
 interface Props {
     approvals: BuildingApproval[];
     buildingId: number;
+    inbox?: boolean;
 }
 
 export default function VerticalLinearStepper(props: Props) {
-  const { approvals, buildingId } = props; 
+  const { approvals, buildingId, inbox } = props; 
   const router = useRouter();
   const [activeStep, setActiveStep] = React.useState(approvals.length - 1);
   const [emptyStep, setEmptyStep] = React.useState<string[]>([]);
@@ -295,7 +296,7 @@ export default function VerticalLinearStepper(props: Props) {
                     <Typography variant="subtitle1">
                         <strong style={{ color: '#E91E63', fontSize: 20 }}>Congratulations!</strong> Your building application was approved by all of the departments. You can now proceed to the payment of tax.
                     </Typography>
-                    <Button onClick={() => handleRedirect('/dashboard/building/payment/' + buildingId)} variant="contained" endIcon={<ArrowForwardIcon />}>
+                    <Button onClick={() => handleRedirect(inbox ? '/dashboard/building/assessment/' + buildingId : '/dashboard/building/payment/' + buildingId)} variant="contained" endIcon={<ArrowForwardIcon />}>
                         Proceed
                     </Button>
                 </Stack>

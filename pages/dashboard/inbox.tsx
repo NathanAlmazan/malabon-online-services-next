@@ -1,23 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Head from "next/head";
 import Box from '@mui/material/Box';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
+import List from "@mui/material/List";
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
 import dynamic from 'next/dynamic';
 import Container from '@mui/material/Container';
+import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import Grid from "@mui/material/Grid";
+import Stack from '@mui/material/Stack';
+import Image from "next/image";
+import Button from '@mui/material/Button';
+import DownloadDoneIcon from '@mui/icons-material/DownloadDone';
+import { SeverityPill } from "../../components/dashboard/SeverityPill";
+import DraftsIcon from '@mui/icons-material/Drafts';
 import { GetServerSideProps } from 'next';
 import parseCookies from '../../config/parseCookie';
 import { apiGetRequest } from '../../hocs/axiosRequests';
+import { SubmittedForm } from "../../components/building/buildingTypes"
+import { useRouter } from 'next/router';
 
-const EnhancedTableToolbar = dynamic(() => import("../../components/dashboard/applications/ApplicationToolbar"));
-const ApplicationRow = dynamic(() => import("../../components/dashboard/applications/ApplicationRow"));
-const RenewRow = dynamic(() => import("../../components/dashboard/applications/RenewRow"));
+const AssessmentProgress = dynamic(() => import("../../components/business/client/assessments"));
+const BuildingAssessment = dynamic(() => import("../../components/building/assessment"));
+const InboxMenu = dynamic(() => import("../../components/dashboard/applications/InboxMenu"));
 const Copyright = dynamic(() => import("../../components/Copyright"));
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -31,18 +39,6 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 }
 
 type Order = 'asc' | 'desc';
-
-function getComparator<Key extends keyof any>(
-  order: Order,
-  orderBy: Key,
-): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string },
-) => number {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
 
 type RowData = {
   businessId: number;
@@ -59,8 +55,9 @@ type RowApproval = {
   approvalType: string;
   approved: boolean;
   required: boolean;
-  approvalFee: string;
+  approvalFee: number;
   approvedAt: Date;
+  remarks: string | null;
   official: {
     firstName: string;
     lastName: string;
@@ -86,77 +83,71 @@ type RenewData = {
 }
 
 
-type Filter = "assessment" | "approved" | "disapproved" | "release" | "all";
+type Filter = "assessment" | "approved" | "new" | "renew" | "building" | "all";
 
 interface Props {
   accessToken: string;
   applications: RowData[];
   renew: RenewData[];
+  building: SubmittedForm[];
 }
 
-export default function UserApplications({ accessToken, applications, renew }: Props) {
-  const [filteredList, setFilteredList] = React.useState<RowData[]>([]);
-  const [selected, setSelected] = React.useState<readonly string[]>([]);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [filter, setFilter] = React.useState<Filter>("all");
-  const [emptyRows, setEmptyRows] = React.useState<number>(0);
-  const [searchValue, setSearchValue] = React.useState<string>("");
+export default function UserApplications({ accessToken, applications, renew, building }: Props) {
+  const router = useRouter();
+  const [newBusiness, setNewBusiness] = useState<RowData[]>(applications);
+  const [renewBusiness, setRenewBusiness] = useState<RenewData[]>(renew);
+  const [buildingApps, setBusinessApps] = useState<SubmittedForm[]>(building);
+  const [selectedBusiness, setSelectedBusiness] = useState<RowData | null>(applications[0]);
+  const [selectedRenewal, setSelectedRenewal] = useState<RenewData | null>(null);
+  const [selectedBuilding, setSelectedBuilding] = useState<SubmittedForm | null>(null);
+  const [filter, setFilter] = useState<Filter>("all");
 
-  React.useEffect(() => {
-    if (filter == "approved") setFilteredList(state => applications.filter(app => app.approved)); 
-    else if (filter == "assessment") setFilteredList(state => applications.filter(app => !app.approved && app.approvals.length < 6)); 
-    else if (filter == "disapproved") setFilteredList(state => applications.filter(app => app.approvals.find(approved => !approved.approved && approved.required))); 
-    else if (filter == "release") setFilteredList(state => applications.filter(app => app.certificateId != null)); 
-    else {
-      setFilteredList(state => applications);
+  useEffect(() => {
+    if (filter == "all") {
+      setNewBusiness(state => applications);
+      setRenewBusiness(state => renew);
+      setBusinessApps(state => building);
+    } else if (filter == "assessment") {
+      setNewBusiness(state => applications.filter(form => !form.approved));
+      setRenewBusiness(state => renew.filter(form => !form.completed));
+      setBusinessApps(state => building.filter(form => !form.approved));
+    } else if (filter == "approved") {
+      setNewBusiness(state => applications.filter(form => form.approved));
+      setRenewBusiness(state => renew.filter(form => form.completed));
+      setBusinessApps(state => building.filter(form => form.approved));
+    } else if (filter == "new") {
+      setNewBusiness(state => applications);
+      setRenewBusiness(state => []);
+      setBusinessApps(state => []);
+    } else if (filter == "renew") {
+      setNewBusiness(state => []);
+      setRenewBusiness(state => renew);
+      setBusinessApps(state => []);
+    } else if (filter == "building") {
+      setNewBusiness(state => []);
+      setRenewBusiness(state => []);
+      setBusinessApps(state => building);
     }
-  }, [filter, applications])
+  }, [filter, applications, renew, building]);
 
-  React.useEffect(() => {
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - filteredList.length) : 0;
-    setEmptyRows(state => emptyRows);
-  }, [page, rowsPerPage, filteredList])
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, name: string) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected: readonly string[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-
-    setSelected(newSelected);
-  };
-
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const handleFilterChange = (value: Filter) => {
-    setFilter(value);
+  const handleSelectBusiness = (selected: RowData) => {
+    setSelectedBusiness(selected);
+    setSelectedRenewal(null);
+    setSelectedBuilding(null);
   }
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(event.target.value);
+  const handleSelectRenew = (renew: RenewData) => {
+    setSelectedRenewal(renew);
+    setSelectedBusiness(null);
+    setSelectedBuilding(null);
   }
 
-  const isSelected = (name: string) => selected.indexOf(name) !== -1;
-  console.log(renew);
+  const handleSlectBuilding = (building: SubmittedForm) => {
+    setSelectedBuilding(building);
+    setSelectedRenewal(null);
+    setSelectedBusiness(null);
+  }
 
   return (
     <>
@@ -164,78 +155,240 @@ export default function UserApplications({ accessToken, applications, renew }: P
             <title>Inbox | Malabon Online Services</title>
         </Head>
         <Container>
-            <Box sx={{ mt: 5, mb: 5 }}>
-                <Typography component="h1" variant="h4" textAlign="left">
-                    Requests <strong style={{ color: "primary.main" }}>Inbox</strong>
-                </Typography>
-            </Box>
-            <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar 
-                  numSelected={selected.length} 
-                  selectFilter={handleFilterChange} 
-                  filter={filter}
-                  searchChange={handleSearchChange}
-                  searchValue={searchValue}
-                />
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={filteredList.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                    sx={{ bgcolor: 'secondary.light' }}
-                />
-                <TableContainer>
-                    <Table
-                      sx={{ minWidth: 750 }}
-                      aria-labelledby="tableTitle"
-                    >
-                    <TableBody>
-                        {filteredList
-                        .filter(list => list.businessName.includes(searchValue))
-                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                        .map((row, index) => {
-                            const isItemSelected = isSelected(row.TIN);
-                            const labelId = `enhanced-table-checkbox-${index}`;
-                            return (
-                              <ApplicationRow 
-                                key={row.businessId}
-                                handleClick={handleClick}
-                                isItemSelected={isItemSelected}
-                                labelId={labelId}
-                                row={row}
-                              />
-                            );
-                        })}
-                        {renew.map((business, index) => {
-                          const isItemSelected = isSelected(business.renewalId.toString());
-                          const labelId = `enhanced-table-checkbox-${index}`;
+            <Paper sx={{ width: '100%', mt: 3, p: 3, minHeight: '60vh' }}>
+              <Stack direction="row" sx={{ mb: 2 }} justifyContent="space-between">
+                  <Typography component="h1" variant="h4" textAlign="left">
+                      Requests <strong style={{ color: "primary.main" }}>Inbox</strong>
+                  </Typography>
+                  <InboxMenu 
+                    filter={filter}
+                    selectFilter={(value) => setFilter(value)}
+                  />
+              </Stack>
+              <Divider />
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={5}>
+                  <List sx={{ overflowY: 'auto', maxHeight: '58vh' }}>
+                    {newBusiness.map(form => {
+                      const fulfiled = form.approved;
+                      const rejected = form.approvals.find(approval => !approval.approved && approval.required);
+                      const isSelected = Boolean(selectedBusiness != null && selectedBusiness.businessId == form.businessId);
 
-                          return (
-                            <RenewRow 
-                              key={business.renewalId}
-                              handleClick={handleClick}
-                              isItemSelected={isItemSelected}
-                              labelId={labelId}
-                              row={business}
+                      return (
+                        <ListItemButton key={form.businessId} onClick={() => handleSelectBusiness(form)} selected={isSelected}>
+                            <ListItemText
+                              primary={<h3>{form.businessName}</h3>}
+                              secondary={
+                                <p>{`New Business Application — ${fulfiled ? "Your application is now ready to claim." : rejected ? "Sorry, your application is rejected. Please open the form for details" : "Your application is currently being assessed. Please patiently wait for the result. You can regularly check the progress by opening your form."}`}
+                                  <br/>
+                                  {new Date(form.submittedAt).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                                </p>
+                              }
+                            />  
+                            <Box sx={{ ml: 2 }}>
+                              <SeverityPill color={fulfiled ? "success" : rejected ? "error" : "warning"}>
+                                {fulfiled ? "Fulfilled" : rejected ? "Rejected" : "Assessing"}
+                              </SeverityPill>
+                            </Box>
+                        </ListItemButton>
+                      )
+
+                    })}
+                    {renewBusiness.map(form => {
+                      const fulfiled = form.completed;
+                      const isSelected = Boolean(selectedRenewal != null && selectedRenewal.renewalId == form.renewalId);
+                      
+                      return (
+                        <ListItemButton key={form.renewalId} onClick={() => handleSelectRenew(form)} selected={isSelected}>
+                            <ListItemText
+                              primary={<h3>{form.businessName ? form.businessName : form.business.businessName}</h3>}
+                              secondary={
+                                <p>{`Business Renewal Application — ${fulfiled ? "Your application is now ready to claim." : "Your application is currently being assessed. Please patiently wait for the result."}`}
+                                  <br/>
+                                  {new Date(form.renewAt).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                                </p>
+                              }
+                            />  
+                            <Box sx={{ ml: 2 }}>
+                              <SeverityPill color={fulfiled ? "success" : "warning"}>
+                                {fulfiled ? "Fulfilled" : "Assessing"}
+                              </SeverityPill>
+                            </Box>
+                        </ListItemButton>
+                      )
+                    })}
+                    {buildingApps.map((form => {
+                      const fulfiled = form.approved;
+                      const rejected = form.approvals.find(approval => !approval.approved && approval.required);
+                      const isSelected = Boolean(selectedBuilding != null && selectedBuilding.buildingId == form.buildingId);
+
+                      return (
+                        <ListItemButton key={form.buildingId} onClick={() => handleSlectBuilding(form)} selected={isSelected}>
+                          <ListItemText
+                            primary={<h3>{form.buildingUse}</h3>}
+                            secondary={
+                              <p>{`Building Permit Application — ${fulfiled ? "Your application is now ready to claim." : rejected ? "Sorry, your application is rejected. Please open the form for details" : "Your application is currently being assessed. Please patiently wait for the result. You can regularly check the progress by opening your form."}`}
+                                <br/>
+                                {new Date(form.submittedAt).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                              </p>
+                            }
+                          />  
+                          <Box sx={{ ml: 2 }}>
+                            <SeverityPill color={fulfiled ? "success" : rejected ? "error" : "warning"}>
+                              {fulfiled ? "Fulfilled" : rejected ? "Rejected" : "Assessing"}
+                            </SeverityPill>
+                          </Box>
+                      </ListItemButton>
+                      )
+                    }))}
+                  </List>
+                </Grid>
+                <Grid item xs={12} md={7}>
+                  {selectedBusiness != null && (
+                    <Grid container spacing={2} sx={{ overflowY: 'auto', maxHeight: '58vh', p: 2 }}>
+                      <Grid item xs={12} md={12}>
+                        <Stack direction="row" justifyContent="space-between">
+                          <Box>
+                            <Typography variant="h5">{selectedBusiness.businessName}</Typography>
+                            <Typography variant="body1">{new Date(selectedBusiness.submittedAt).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</Typography>
+                          </Box>
+                          <IconButton onClick={() => router.push('/dashboard/business/new/assessment/' + selectedBusiness.businessId)}>
+                            <DraftsIcon fontSize="large" color="primary" />
+                          </IconButton>
+                        </Stack>
+                      </Grid>
+                      <Grid item xs={12} md={12}>
+                        {selectedBusiness.approved ? (
+                          <Box sx={{
+                            width: '100%',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            flexDirection: 'column',
+                            padding: 2
+                          }}>
+                            <Image 
+                                src="/icons/claim_icon.png"
+                                alt='cover image'
+                                width={400}
+                                height={400}
                             />
-                          )
-                        })}
-                         {emptyRows > 0 && (
-                          <TableRow
-                            style={{
-                              height: (53) * emptyRows,
-                            }}
-                          >
-                            <TableCell colSpan={6} />
-                          </TableRow>
+                            <Typography variant="body1" component="h1" align="center" sx={{ maxWidth: 350 }}>
+                                Congratulations! Your new business is now registered. Please click the button bellow to see the date and time when you can claim your business permit.
+                            </Typography>
+                            <Button variant="outlined" startIcon={<DownloadDoneIcon />} sx={{ borderRadius: 50, mt: 3 }} onClick={() => router.push('/dashboard/business/new/claim/' + selectedBusiness.businessId)}>
+                                Claim Business Permit
+                            </Button>
+                          </Box>
+                        ) : (
+                          <AssessmentProgress approvals={selectedBusiness.approvals} businessId={selectedBusiness.businessId} inbox={true} /> 
                         )}
-                    </TableBody>
-                    </Table>
-                </TableContainer>
-                
+                      </Grid>
+                    </Grid>
+                  )}
+                  {selectedRenewal != null && (
+                    <Grid container spacing={2} sx={{ overflowY: 'auto', maxHeight: '58vh', p: 2 }}>
+                      <Grid item xs={12} md={12}>
+                        <Stack direction="row" justifyContent="space-between">
+                          <Box>
+                            <Typography variant="h5">{selectedRenewal.businessName ? selectedRenewal.businessName : selectedRenewal.business.businessName}</Typography>
+                            <Typography variant="body1">{new Date(selectedRenewal.renewAt).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</Typography>
+                          </Box>
+                          <IconButton onClick={() => router.push('/dashboard/business/renew/payment/' + selectedRenewal.renewalId)} disabled={Boolean(selectedRenewal.topFile != null)}>
+                            <DraftsIcon fontSize="large" color="primary" />
+                          </IconButton>
+                        </Stack>
+                      </Grid>
+                      <Grid item xs={12} md={12}>
+                        {selectedRenewal.completed ? (
+                          <Box sx={{
+                            width: '100%',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            flexDirection: 'column',
+                            padding: 2
+                          }}>
+                            <Image 
+                                src="/icons/claim_icon.png"
+                                alt='cover image'
+                                width={400}
+                                height={400}
+                            />
+                            <Typography variant="body1" component="h1" align="center" sx={{ maxWidth: 350 }}>
+                                Congratulations! Your business is renewed successfully. Please click the button below to see the date and time when you can claim your new business permit.
+                            </Typography>
+                            <Button variant="outlined" startIcon={<DownloadDoneIcon />} sx={{ borderRadius: 50, mt: 3 }} onClick={() => router.push('/dashboard/business/new/claim/' + selectedRenewal.renewalId)}>
+                                Claim Business Permit
+                            </Button>
+                          </Box>
+                        ) : (
+                          <Box sx={{
+                            width: '100%',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            flexDirection: 'column',
+                            padding: 2
+                          }}>
+                            <Image 
+                                src="/icons/assess_icon.png"
+                                alt='cover image'
+                                width={300}
+                                height={300}
+                            />
+                            <Typography variant="body1" component="h1" align="center" sx={{ maxWidth: 350, mt: 3 }}>
+                                Your business renewal is currently being assessed. Thank you for your patience.
+                            </Typography>
+                          </Box>
+                        )}
+                      </Grid>
+                    </Grid>
+                  )}
+                  {selectedBuilding != null && (
+                    <Grid container spacing={2} sx={{ overflowY: 'auto', maxHeight: '58vh', p: 2 }}>
+                      <Grid item xs={12} md={12}>
+                        <Stack direction="row" justifyContent="space-between">
+                          <Box>
+                            <Typography variant="h5">{selectedBuilding.buildingUse}</Typography>
+                            <Typography variant="body1">{new Date(selectedBuilding.submittedAt).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</Typography>
+                          </Box>
+                          <IconButton onClick={() => router.push('/dashboard/building/assessment/' + selectedBuilding.buildingId)}>
+                            <DraftsIcon fontSize="large" color="primary" />
+                          </IconButton>
+                        </Stack>
+                      </Grid>
+                      <Grid item xs={12} md={12}>
+                        {selectedBuilding.approved ? (
+                          <Box sx={{
+                            width: '100%',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            flexDirection: 'column',
+                            padding: 2
+                          }}>
+                            <Image 
+                                src="/icons/claim_icon.png"
+                                alt='cover image'
+                                width={400}
+                                height={400}
+                            />
+                            <Typography variant="body1" component="h1" align="center" sx={{ maxWidth: 350 }}>
+                                Congratulations! Your building/establishment is now registered. Please click the button below to see the date and time when you can claim your building permit.
+                            </Typography>
+                            <Button variant="outlined" startIcon={<DownloadDoneIcon />} sx={{ borderRadius: 50, mt: 3 }} onClick={() => router.push('/dashboard/building/claim/' + selectedBuilding.buildingId)}>
+                                Claim Building Permit
+                            </Button>
+                          </Box>
+                        ) : (
+                          <BuildingAssessment approvals={selectedBuilding.approvals} buildingId={selectedBuilding.buildingId} inbox={true} /> 
+                        )}
+                      </Grid>
+                    </Grid>
+                  )}
+                  </Grid>
+              </Grid>
             </Paper>
 
             <Copyright />
@@ -261,6 +414,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const result = await apiGetRequest('/business/new/applications', data.loggedInUser);
   const renew = await apiGetRequest('/business/renew/myRequests', data.loggedInUser);
+  const building = await apiGetRequest('/building/user/requests', data.loggedInUser);
 
   if (result.status > 300) {
     return {
@@ -272,7 +426,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: {
       accessToken: data.loggedInUser,
       applications: result.data,
-      renew: renew.data
+      renew: renew.data,
+      building: building.data
     }
   }
 }

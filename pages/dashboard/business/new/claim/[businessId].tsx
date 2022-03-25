@@ -141,7 +141,7 @@ export default function ClaimPermitPage(props : Props) {
                             You can now claim your business permit on
                         </Typography>
                         <Typography variant="h5" component="h1" align="center">
-                            {new Date(form.submittedAt).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                            {new Date(form.appointment?.schedule as Date).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                         </Typography>
                         <Button variant="outlined" startIcon={<DownloadDoneIcon />} sx={{ borderRadius: 50, mt: 3 }} onClick={() => handleViewSubmittedFile()}>
                             View Business Permit
