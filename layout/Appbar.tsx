@@ -73,9 +73,11 @@ function Appbar({ matches, open, toggleDrawer }: Props) {
                 const forms = await apiGetRequest('/business/new/approve/forms', currentUser?.accessToken);
                 const renewForms = await apiGetRequest('/business/renew/requests', currentUser?.accessToken);
                 const buildingForms = await apiGetRequest('/building/assess/forms', currentUser?.accessToken);
+                const realEstate = await apiGetRequest('/estate/approve', currentUser?.accessToken);
                 const business = forms.data as unknown[];
                 const renew = renewForms.data as unknown[];
                 const building = buildingForms.data as unknown[];
+                const estate = realEstate.data as unknown[];
 
                 let notificationList: Notifications[] = [];
 
@@ -105,6 +107,17 @@ function Appbar({ matches, open, toggleDrawer }: Props) {
                     notificationList.push({
                         notifDesc: `${building.length} building permit applications need approval.`,
                         notifSubject: "Building Permit Applications",
+                        createdAt: new Date(),
+                        notifId: 3,
+                        read: false,
+                        userId: 0
+                    })
+                }
+
+                if (estate.length > 0 ) {
+                    notificationList.push({
+                        notifDesc: `${estate.length} real estate payment applications need approval.`,
+                        notifSubject: "Real Estate Applications",
                         createdAt: new Date(),
                         notifId: 3,
                         read: false,
@@ -164,6 +177,7 @@ function Appbar({ matches, open, toggleDrawer }: Props) {
                         <NotificationsPopover 
                             notifications={notifications}
                             setNotifications={handleNotifications}
+                            admin={Boolean(router.pathname.search("/admin") != -1)}
                         />
                         <IconButton color="secondary" onClick={() => router.push('/')}>
                             <HomeRoundedIcon />

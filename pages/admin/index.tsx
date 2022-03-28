@@ -9,15 +9,20 @@ import dynamic from "next/dynamic";
 import parseCookies from '../../config/parseCookie';
 import { apiGetRequest } from '../../hocs/axiosRequests';
 import Box from '@mui/material/Box';
+import BusinessIcon from '@mui/icons-material/Business';
+import StorefrontIcon from '@mui/icons-material/Storefront';
+import LandscapeIcon from '@mui/icons-material/Landscape';
 import { capitalCase } from 'change-case';
 import { useRouter } from "next/router";
 import { SubmittedForm } from '../../components/building/buildingTypes';
+import { RealEstate } from '../../components/realEstate/realEstateTypes';
 
 const NewBusinessStats = dynamic(() => import("../../components/dashboard/NewBusiness"));
 const TotalCustomers = dynamic(() => import("../../components/dashboard/Customers"));
 const TasksProgress = dynamic(() => import("../../components/dashboard/Progress"));
 const LatestRequest = dynamic(() => import("../../components/dashboard/LatestRequest"));
 const BuildingRequest = dynamic(() => import("../../components/dashboard/BuildingRequests"));
+const RealEstateRequests = dynamic(() => import("../../components/dashboard/RealEstateRequests"));
 const RenewRequest = dynamic(() => import("../../components/dashboard/RenewRequest"));
 const Copyright = dynamic(() => import("../../components/Copyright"));
 
@@ -93,6 +98,7 @@ type AdminDashboard = {
     certificateFile: string | null;
   }[],
   building: SubmittedForm[],
+  realEstate: RealEstate[];
   productivity: number
 }
 
@@ -165,6 +171,7 @@ export default function AdminDashboard(props: Props) {
             <TotalCustomers 
               title="BUSINESS RENEWAL"
               value={adminDashboard.renew.length}
+              icon={<StorefrontIcon />}
             />
           </Grid>
           <Grid
@@ -177,6 +184,7 @@ export default function AdminDashboard(props: Props) {
              <TotalCustomers 
               title="BUILDING PERMIT"
               value={adminDashboard.building.length}
+              icon={<BusinessIcon />}
             />
           </Grid>
           <Grid
@@ -186,8 +194,10 @@ export default function AdminDashboard(props: Props) {
             sm={6}
             xs={12}
           >
-            <TasksProgress 
-              value={Math.floor((adminDashboard.productivity / 100) * 100)}
+            <TotalCustomers 
+              title="REAL ESTATE"
+              value={adminDashboard.realEstate.length}
+              icon={<LandscapeIcon />}
             />
           </Grid>
           <Grid
@@ -224,6 +234,18 @@ export default function AdminDashboard(props: Props) {
             <BuildingRequest 
               forms={adminDashboard.building}
               viewAll={() => handleRedirect('/admin/building')}
+            />
+          </Grid>
+          <Grid
+            item
+            xl={12}
+            lg={12}
+            sm={12}
+            xs={12}
+          >
+            <RealEstateRequests 
+              forms={adminDashboard.realEstate}
+              viewAll={() => handleRedirect('/admin/estate')}
             />
           </Grid>
         </Grid>

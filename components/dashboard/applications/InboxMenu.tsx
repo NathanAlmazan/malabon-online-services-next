@@ -1,11 +1,8 @@
 import React, { useRef, useState } from 'react';
-import HomeIcon from '@mui/icons-material/Home';
-import PersonIcon from '@mui/icons-material/Person';
-import SettingsIcon from '@mui/icons-material/Settings';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import Tooltip from '@mui/material/Tooltip';
 // material
-import { Box, MenuItem, IconButton } from '@mui/material';
+import { MenuItem, IconButton } from '@mui/material';
 // components
 import dynamic from "next/dynamic";
 
@@ -13,7 +10,7 @@ const MenuPopover = dynamic(() => import("../../MenuPopover"));
 
 // ----------------------------------------------------------------------
 
-type Filter = "assessment" | "approved" | "new" | "renew" | "building" | "all";
+type Filter = "assessment" | "approved" | "new" | "renew" | "building" | "all" | "unpaid" | "estate";
 
 interface Props {
     selectFilter: (value: Filter) => void;
@@ -39,6 +36,10 @@ export default function InboxMenu(props: Props) {
       label: "Approved"
     },
     {
+      value: "unpaid",
+      label: "Unpaid Tax"
+    },
+    {
       value: "new",
       label: "New Business"
     },
@@ -49,6 +50,10 @@ export default function InboxMenu(props: Props) {
     {
       value: "building",
       label: "Building Permit"
+    },
+    {
+      value: "estate",
+      label: "Real Estate"
     },
   ]
 

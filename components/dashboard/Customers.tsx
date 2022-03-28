@@ -1,8 +1,8 @@
 import { Avatar, Card, CardContent, Grid, Typography } from '@mui/material';
-import BusinessIcon from '@mui/icons-material/Business';
+import { ReactNode } from 'react';
 
 
-const TotalCustomers = (props: { title: string, value: number }) => (
+const TotalCustomers = (props: { title: string, value: number, icon: ReactNode }) => (
   <Card sx={{ height: '100%' }}>
     <CardContent>
       <Grid
@@ -33,7 +33,7 @@ const TotalCustomers = (props: { title: string, value: number }) => (
               width: 56
             }}
           >
-            <BusinessIcon />
+            {props.icon}
           </Avatar>
         </Grid>
       </Grid>

@@ -15,12 +15,15 @@ import { BusinessRegistry } from './business/new/assessment/[businessId]';
 import AddBusinessIcon from "@mui/icons-material/AddBusiness";
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 import RestorePageIcon from '@mui/icons-material/RestorePage';
+import LandscapeIcon from '@mui/icons-material/Landscape';
 
 const ServiceCard = dynamic(() => import('../../components/dashboard/ServiceCard'));
 const NewBusinessDialog = dynamic(() => import('../../components/dashboard/newBusinessDialog'));
 const BuildingPermitDialog = dynamic(() => import('../../components/dashboard/BuildingDialog'));
 const RenewalDialog = dynamic(() => import('../../components/dashboard/renewalDialog'));
+const RealEstateDialog = dynamic(() => import('../../components/dashboard/realEstateDialog'));
 const BusinessRenewDialog = dynamic(() => import('../../components/business/client/renew/RenewDialog'));
+const RealEstatePayDialog = dynamic(() => import('../../components/realEstate/realEstateDialog'));
 
 const malabonServices = [
   {
@@ -32,7 +35,7 @@ const malabonServices = [
   {
       icon: <RestorePageIcon sx={{ width: 80, height: 80 }} color="secondary" />,
       title: 'Online Renewal of Business Permit',
-      description: 'Renew your business permit online anytime and anywhere in just 5 steps.',
+      description: 'Renew your business permit online anytime and anywhere in just 4 steps.',
       applyLink: '/business/renew'
   },
   {
@@ -40,7 +43,13 @@ const malabonServices = [
       title: 'Online Building Permit Registration',
       description: 'Register your new facility online and receive your business permit in just 5 steps.',
       applyLink: '/building/register'
-  }
+  },
+  {
+    icon: <LandscapeIcon sx={{ width: 80, height: 80 }} color="secondary" />,
+    title: 'Online Real State Tax Payment',
+    description: 'Process and pay your annual real estate tax online in just 4 simple steps.',
+    applyLink: '/estate/register'
+  } 
 ];
 
 function Copyright() {
@@ -78,12 +87,16 @@ export default function Dashboard(props: Props) {
   const [openRenewal, setOpenrenewal] = useState<boolean>(false);
   const [renewDialog, setrenewDialog] = useState<boolean>(false);
   const [openBuilding, setOpenBuilding] = useState<boolean>(false);
+  const [openRealEstate, setOpenRealEstate] = useState<boolean>(false);
+  const [realDialog, setRealDialog] = useState<boolean>(false);
 
   const openDialog = (dialog: string) => {
     if (dialog == "Online New Business Registration") {
       setOpenNewBusiness(true);
     } else if (dialog == "Online Renewal of Business Permit") {
       setOpenrenewal(true);
+    } else if (dialog == "Online Real State Tax Payment") {
+      setOpenRealEstate(true);
     } else {
       setOpenBuilding(true);
     }
@@ -96,6 +109,11 @@ export default function Dashboard(props: Props) {
   const proceedRenew = () => {
     setOpenrenewal(false);
     setrenewDialog(true);
+  }
+
+  const proceedRealEstate = () => {
+    setOpenRealEstate(false);
+    setRealDialog(true);
   }
 
   return (
@@ -135,7 +153,7 @@ export default function Dashboard(props: Props) {
           </Box>
           <Grid container spacing={2}>
               {malabonServices.map(service => (
-                  <Grid item xs={12} sm={6} md={4} key={service.title} >
+                  <Grid item xs={12} sm={6} md={3} key={service.title} >
                       <ServiceCard details={service} openDialog={openDialog} />
                   </Grid>
               ))}
@@ -144,7 +162,9 @@ export default function Dashboard(props: Props) {
         <NewBusinessDialog open={openNewBusiness} handleClose={() => setOpenNewBusiness(false)} proceed={proceedToPage} />
         <BuildingPermitDialog open={openBuilding} handleClose={() => setOpenBuilding(false)} proceed={proceedToPage}/>
         <RenewalDialog open={openRenewal} handleClose={() => setOpenrenewal(false)} proceed={proceedRenew} />
+        <RealEstateDialog open={openRealEstate} handleClose={() => setOpenRealEstate(false)} proceed={proceedRealEstate} />
         <BusinessRenewDialog open={renewDialog} handleClose={() => setrenewDialog(false)} businesses={ownedBusinesses} accessToken={accessToken} uid={account.account.uid} />
+        <RealEstatePayDialog open={realDialog} handleClose={() => setRealDialog(false)} accessToken={accessToken} uid={account.account.uid} />
         <Copyright />
       </>
   );

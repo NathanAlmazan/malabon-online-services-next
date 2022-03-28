@@ -53,13 +53,16 @@ function renderContent(notification: Notification) {
 
 interface NotificationItemProps {
     notification: Notification;
+    admin?: boolean;
 }
 
-function NotificationItem({ notification }: NotificationItemProps) {
+function NotificationItem({ notification, admin }: NotificationItemProps) {
   const { title } = renderContent(notification);
   const history = useRouter();
   const onRouterClick = () => {
-    history.push('/dashboard/inbox');
+    if (!admin) {
+      history.push('/dashboard/inbox');
+    }
   }
 
   return (
@@ -99,10 +102,11 @@ function NotificationItem({ notification }: NotificationItemProps) {
 interface Props {
     notifications: Notification[];
     setNotifications: () => void;
+    admin?: boolean;
 }
 
 export default function NotificationsPopover(props: Props) {
-  const { notifications, setNotifications } = props;
+  const { notifications, setNotifications, admin } = props;
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
   const totalUnRead = notifications.filter((item) => !item.read).length;
@@ -153,7 +157,7 @@ export default function NotificationsPopover(props: Props) {
 
           {totalUnRead > 0 && (
             <Tooltip title=" Mark all as read">
-              <IconButton color="primary" onClick={handleMarkAllAsRead}>
+              <IconButton color="primary" onClick={handleMarkAllAsRead} disabled={admin}>
                 <DoneAllIcon />
               </IconButton>
             </Tooltip>
@@ -172,7 +176,7 @@ export default function NotificationsPopover(props: Props) {
             }
           >
             {notifications.map((notification, index) => (
-              <NotificationItem key={index} notification={notification} />
+              <NotificationItem key={index} notification={notification} admin={admin} />
             ))}
           </List>
         </Scrollbar>

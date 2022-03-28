@@ -12,20 +12,21 @@ import Snackbar from "@mui/material/Snackbar";
 import { styled, useTheme } from '@mui/material/styles';
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
-import { Paypal as PaypalIcon } from '../../../../../icons/paypal';
-import parseCookies from '../../../../../config/parseCookie';
-import { apiGetRequest, apiPostRequest } from '../../../../../hocs/axiosRequests';
+import { Paypal as PaypalIcon } from '../../../../icons/paypal';
+import parseCookies from '../../../../config/parseCookie';
+import { apiGetRequest, apiPostRequest } from '../../../../hocs/axiosRequests';
 import Stack from '@mui/material/Stack';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-import uploadFileToFirebase from '../../../../../hocs/uploadFile';
+import uploadFileToFirebase from '../../../../hocs/uploadFile';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import braintree from "braintree-web";
 import { useRouter } from "next/router";
+import { RealEstate, RealEstatePayments } from '../../../../components/realEstate/realEstateTypes';
 
-const StepProgress = dynamic(() => import("../../../../../components/StepProgress"));
-const PaypalContainer = dynamic(() => import("../../../../../components/business/client/payment/paypal"), { ssr: false });
-const BankDeposit = dynamic(() => import("../../../../../components/business/client/payment/bankDeposit"));
-const Copyright = dynamic(() => import("../../../../../components/Copyright"));
+const StepProgress = dynamic(() => import("../../../../components/StepProgress"));
+const PaypalContainer = dynamic(() => import("../../../../components/business/client/payment/paypal"), { ssr: false });
+const BankDeposit = dynamic(() => import("../../../../components/business/client/payment/bankDeposit"));
+const Copyright = dynamic(() => import("../../../../components/Copyright"));
 
 const SeverityPillRoot = styled('span')(({ theme }: { theme: any }) => {
     const backgroundColor = "#FFFF";
@@ -54,20 +55,6 @@ const SeverityPillRoot = styled('span')(({ theme }: { theme: any }) => {
     };
   });
 
-type BusinessRenewal = {
-    renewalId: number;
-    businessId: number | null;
-    permitNumber: string | null;
-    receiptNumber: string | null;
-    receiptFile: string | null;
-    renewAt: Date;
-    completed: boolean;
-    businessName: string | null;
-    topFile: string | null;
-    quarterly: boolean;
-    accountId: number;
-}
-
 type UserAccount = {
     account: {
         email: string;
@@ -76,26 +63,10 @@ type UserAccount = {
     }
 }
 
-type BusinessPayments = {
-    paymentId: number;
-    amount: string;
-    paid: boolean;
-    newBusiness: boolean;
-    issuedAt: Date;
-    transactionId: string | null;
-    paidAt: Date | null;
-    receipt: string | null;
-    renewId: number;
-}
-
-type RenewForm = BusinessRenewal & {
-  payments: BusinessPayments[];
-}
-
 interface Props {
     accessToken: string;
-    renewId: number;
-    form: RenewForm,
+    estateId: number;
+    form: RealEstate,
     clientKey: {
         clientKey: string;
     },
@@ -103,11 +74,11 @@ interface Props {
 }
 
 export default function RegistrationPayment(props: Props) {
-  const { form, clientKey, account, accessToken, renewId } = props;
+  const { form, clientKey, account, accessToken, estateId } = props;
   const theme = useTheme();
   const router = useRouter();
   const [paymentMode, setPaymentMode] = useState<string>("Bank Deposit");
-  const [totalTax, setTotalTax] = useState<BusinessPayments>();
+  const [totalTax, setTotalTax] = useState<RealEstatePayments>();
   const [bankDepositSlip, setBankDepositSlip] = useState<File>();
   const [deviceData, setDeviceData] = useState<string>();
   const [cashProof, setCashProof] = useState<File>();
@@ -157,12 +128,12 @@ export default function RegistrationPayment(props: Props) {
                     paymentId: totalTax.paymentId,
                     receiptURL: uploadedFile
                 })
-                const submitPayment = await apiPostRequest('/payments/business/bank', body, accessToken);
+                const submitPayment = await apiPostRequest('/payments/estate/bank', body, accessToken);
 
                 if (submitPayment.status > 300) {
                     setError(submitPayment.message);
                 } else {
-                    router.push("/dashboard/business/renew/claim/" + renewId);
+                    router.push("/dashboard/estate/claim/" + estateId);
                 }
             }
             setLoading(false);
@@ -180,12 +151,12 @@ export default function RegistrationPayment(props: Props) {
                   paymentId: totalTax.paymentId,
                   receiptURL: uploadedFile
               })
-              const submitPayment = await apiPostRequest('/payments/business/bank', body, accessToken);
+              const submitPayment = await apiPostRequest('/payments/estate/bank', body, accessToken);
 
               if (submitPayment.status > 300) {
-                setError(submitPayment.message);
+                  setError(submitPayment.message);
               } else {
-                router.push("/dashboard/business/renew/claim/" + renewId);
+                  router.push("/dashboard/estate/claim/" + estateId);
               }
           }
           setLoading(false);
@@ -207,12 +178,12 @@ export default function RegistrationPayment(props: Props) {
                 deviceData: deviceData
             })
 
-            const submitPayment = await apiPostRequest('/payments/renew/paypal', body, accessToken);
+            const submitPayment = await apiPostRequest('/payments/estate/paypal', body, accessToken);
 
             if (submitPayment.status > 300) {
                 setError(submitPayment.message);
             } else {
-              router.push("/dashboard/business/new/claim/" + renewId);
+              router.push("/dashboard/estate/claim/" + estateId);
             }
 
             setLoading(false);
@@ -222,7 +193,7 @@ export default function RegistrationPayment(props: Props) {
   return (
     <>
         <Head>
-          <title>Tax Payment | New Business</title>
+          <title>Tax Payment | Real Estate</title>
         </Head>
         <Container>
           <Paper elevation={16} sx={{ p: 3, mt: 5 }}>
@@ -233,7 +204,7 @@ export default function RegistrationPayment(props: Props) {
                 mb: 5
               }}>
                   <Typography component="h1" variant="h5" color="secondary" sx={{ pr: 2 }}>
-                    Payment to Renew Business Permit
+                    Real Estate Tax Payment
                   </Typography>
             </Box>
                 <Grid container spacing={5} justifyContent="center" alignItems="center">
@@ -382,7 +353,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       }
     }
   
-    const result = await apiGetRequest('/business/renew/assess/' + parseInt(params.renewId as string), data.loggedInUser);
+    const result = await apiGetRequest('/estate/request/' + parseInt(params.estateId as string), data.loggedInUser);
     const clientKey = await apiGetRequest('/payments/paypal/client', data.loggedInUser);
     const account = await apiGetRequest('/accounts/search', data.loggedInUser);
   
@@ -392,11 +363,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       }
     }
 
-    if ((result.data as RenewForm).payments.filter(payment => !payment.paid).length == 0) {
+    if ((result.data as RealEstate).payments.filter(payment => !payment.paid).length == 0) {
       return {
         redirect: {
           permanent: false,
-          destination: "/dashboard/business/renew/claim/" + parseInt(params.renewId as string)
+          destination: "/dashboard/estate/claim/" + parseInt(params.estateId as string)
         }
       }
     }
@@ -404,7 +375,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       props: {
         accessToken: data.loggedInUser,
-        renewId: parseInt(params.renewId as string),
+        estateId: parseInt(params.estateId as string),
         form: result.data,
         clientKey: clientKey.data,
         account: account.data
