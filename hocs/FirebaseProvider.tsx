@@ -84,7 +84,7 @@ export default function FirebaseProvider({ children }: { children: ReactNode }) 
 
     useEffect(() => {
         const unsubscribe = firebaseAuth.onAuthStateChanged(user => {
-            if (user && user.emailVerified) {
+            if (user) {
                 user.getIdToken().then(token => {
                     setCurrentUser(state => ({
                         accessToken: token,
