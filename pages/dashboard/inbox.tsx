@@ -173,8 +173,6 @@ export default function UserApplications({ accessToken, applications, renew, bui
     setSelectedBusiness(null);
   }
 
-  console.log(realEstate);
-
   return (
     <>
         <Head>
@@ -334,6 +332,29 @@ export default function UserApplications({ accessToken, applications, renew, bui
                         )}
                       </Grid>
                     </Grid>
+                  )}
+                  {Boolean(applications.length == 0 && renew.length == 0 && building.length == 0 && realEstate.length == 0) && (
+                    <Box sx={{
+                      width: '100%',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      flexDirection: 'column',
+                      padding: 2
+                    }}>
+                      <Image 
+                          src="/icons/mail_icon.png"
+                          alt='cover image'
+                          width={400}
+                          height={400}
+                      />
+                      <Typography variant="body1" component="h1" align="center" sx={{ maxWidth: 350 }}>
+                          You have no existing request at the moment. Please go to home page and select transaction.
+                      </Typography>
+                      <Button variant="outlined" startIcon={<DownloadDoneIcon />} sx={{ borderRadius: 50, mt: 3 }} onClick={() => router.push('/dashboard')}>
+                          Go to Home Page
+                      </Button>
+                    </Box>
                   )}
                   {selectedRenewal != null && (
                     <Grid container spacing={2} sx={{ overflowY: 'auto', maxHeight: '58vh', p: 2 }}>

@@ -208,6 +208,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const userAccount = await apiGetRequest('/accounts/search', data.loggedInUser);
   const ownedBusinesses = await apiGetRequest('/business/renew/owned', data.loggedInUser);
 
+  if (userAccount.status > 300) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/"
+      }
+    }
+  }
+
   return {
     props: {
       accessToken: data.loggedInUser,

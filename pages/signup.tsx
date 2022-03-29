@@ -60,8 +60,9 @@ function SignupPage() {
             provider: "google.com"
           })
 
-          apiPostRequest('/accounts/socialSignup', body);
-          router.push('/dashboard');
+          apiPostRequest('/accounts/socialSignup', body).then((response) => {
+            router.push('/dashboard');
+          });
         }
         
       }).catch((error) => {
@@ -89,8 +90,9 @@ function SignupPage() {
             provider: "facebook.com"
           })
 
-          apiPostRequest('/accounts/socialSignup', body);
-          router.push('/dashboard');
+          apiPostRequest('/accounts/socialSignup', body).then((response) => {
+            router.push('/dashboard');
+          });
         }
 
         console.log(result);
