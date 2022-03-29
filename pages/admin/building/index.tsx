@@ -91,7 +91,7 @@ export default function BuildingPermit(props: Props) {
     <>
      <Head>
       <title>
-        Building Permit | Malabon Online Services
+        Building Permit | Municipal Online Services
       </title>
     </Head>
     <Container>

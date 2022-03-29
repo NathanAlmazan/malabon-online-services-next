@@ -167,7 +167,7 @@ export default function BusinessRequests(props: Props) {
     <>
     <Head>
       <title>
-        New Business | Malabon Online Services
+        New Business | Municipal Online Services
       </title>
     </Head>
     <Container>

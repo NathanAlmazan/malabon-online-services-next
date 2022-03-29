@@ -73,6 +73,7 @@ export type RegistrationData = {
     engineer: string;
     latitude: number | null;
     longitude: number | null;
+    quarterPayment: boolean;
     files: FormFiles[];
 }
 

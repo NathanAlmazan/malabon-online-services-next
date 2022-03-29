@@ -176,7 +176,7 @@ export default function UserApplications({ accessToken, applications, renew, bui
   return (
     <>
         <Head>
-            <title>Inbox | Malabon Online Services</title>
+            <title>Inbox | Municipal Online Services</title>
         </Head>
         <Container>
             <Paper sx={{ width: '100%', mt: 3, p: 3, minHeight: '60vh' }}>

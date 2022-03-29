@@ -4,6 +4,8 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Head from 'next/head';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Avatar from '@mui/material/Avatar';
 import { useTheme } from '@mui/material/styles';
 import dynamic from 'next/dynamic';
 import { GetServerSideProps } from 'next';
@@ -79,6 +81,14 @@ interface Props {
   }
 }
 
+const style = {
+  display: { xs: "none", sm: "block" },
+  width: { xs: "20rem", sm: "25rem" },
+  height: { xs: "20rem", sm: "25rem" },
+  marginTop: { xs: "15rem", sm: "15rem" },
+  marginRight: { lg: "5rem" }
+};
+
 export default function Dashboard(props: Props) {
   const { account, ownedBusinesses, accessToken } = props;
   const theme = useTheme();
@@ -120,15 +130,15 @@ export default function Dashboard(props: Props) {
       <>
        <Head>
           <title>
-              Home | Malabon City Online Services
+              Home | Municipal City Online Services
           </title>
         </Head>
         <Box sx={{
           display: 'flex',
           alignItems: 'end',
-          justifyContent: 'flex-start',
+          justifyContent: { xs: 'center', md: 'space-between' },
           wisth: '100vw',
-          height: 300,
+          height: 450,
           backgroundImage: 'url("/covers/city_hall.png")',
           backgroundRepeat: 'no-repeat',
           background: 'linear-gradient(0deg, rgba(255, 0, 150, ), rgba(255, 0, 150, 0.5))',
@@ -136,15 +146,38 @@ export default function Dashboard(props: Props) {
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed'
         }}>
-            <Box sx={{ ml: 5, pb: 3 }}>
-              <Typography variant="h5" sx={{ color: theme.palette.primary.dark }}>
-                Welcome to
-              </Typography>
-              <Typography variant="h3" align="center" sx={{ color: theme.palette.primary.main }}>
-                Malabon City Online Services
-              </Typography>
-            </Box>
-        </Box>
+            <Box sx={{ p: { xs: 6.5, sm: 3, lg: 16 }}}>
+                <Typography
+                  color="primary"
+                  mb={1}
+                  sx={{
+                    fontWeight: "bold",
+                    textAlign: { xs: "center", sm: "left" },
+                    fontSize: { xs: "1.8em", sm: "2em", lg: "2.5em" },
+                    maxWidth: "20ch"
+                  }}
+                >
+                  Welcome to Municipal Online Services
+                </Typography>
+                <Typography
+                  color="secondary.dark"
+                  mb={{ xs: 15, md: 10 }}
+                  sx={{
+                    fontWeight: "bold",
+                    textAlign: 'center',
+                    fontSize: { xs: "1.7em", sm: "2em", lg: "1.5em" },
+                    maxWidth: "20ch"
+                  }}
+                >
+                 Fast Convenient Secure
+                </Typography>
+              </Box>
+              <Avatar
+                sx={style}
+                alt="people"
+                src="https://www.bdo.com.ph/sites/default/files/images/Body%20-%20Article%20=%20How%20to%20invest%20in%20the%20Philippine%20Stock%20Market%20-%20Location%20=%20above%20How%20to%20make%20money%20investing%20in%20the%20stock%20ma.jpg"
+              />
+          </Box>
         <Container maxWidth="lg">
           <Box sx={{ mt: 5, mb: 5 }}>
             <Typography component="p" variant="h5" textAlign="center" sx={{ color: theme.palette.primary.dark }}>

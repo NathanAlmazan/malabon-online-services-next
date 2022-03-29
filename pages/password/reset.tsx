@@ -53,7 +53,7 @@ function SignupPage() {
     <>
       <Head>
         <title>
-            Signup | Malabon City Online Services
+            Signup | Municipal City Online Services
         </title>
       </Head>
     
@@ -84,7 +84,7 @@ function SignupPage() {
                   </Grid>
                   <Grid item>
                       <Typography variant="h2">
-                          Malabon City
+                          Municipal City
                       </Typography>
                       <Typography variant="h4" gutterBottom component="div">
                           Online Services

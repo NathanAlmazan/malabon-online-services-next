@@ -41,7 +41,7 @@ export default function AccountProfile(props: Props) {
     <>
         <Head>
             <title>
-               Your Profile | Malabon Online Services
+               Your Profile | Municipal Online Services
             </title>
         </Head>
         <Grid container direction="column">

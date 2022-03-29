@@ -71,16 +71,16 @@ export default function CustomizedDialogs(props: Props) {
                 Requirements
             </Typography>
             <Typography gutterBottom>
-                {"Before proceeding with the Mayor's Permit renewal, applicant must secure the following:"}
+                {"Before proceeding with the Real Estate Tax Payment, applicant must secure the following:"}
             </Typography>
             <Typography>
-                {"1. Business Tax Payment at the City Treasurer's Office (CTO) or at any satellite CTO Cashier"}
+                {"1. Tax Declaration Number of the property."}
             </Typography>
             <Typography>
-                {"2. Official Receipt Number. (Required if your business is not in the new directory."}
+                {"2. Scanned copy of the last year real estate tax receipt as proof."}
             </Typography>
             <Typography>
-                {" 3. Mayor's Permit Number. (Required if your business is not in the new directory."}
+                {" 3. Owners Identity."}
             </Typography>
         </DialogContent>
         <DialogActions>

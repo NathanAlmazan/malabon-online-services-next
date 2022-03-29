@@ -74,13 +74,13 @@ export default function CustomizedDialogs(props: Props) {
                 Before proceeding in Building Permit Application, please secure the following:
             </Typography>
             <Typography>
-                1.  Proof of Business Registration (DTI for Sole Proprietorship/SEC for Corporations and Partnerships/CDA for Cooperatives) (Required)
+                1.  Proof of Land Ownership (Land Title) (Required)
             </Typography>
             <Typography>
-                2.  Contract of Lease (if leased) or Tax Declaration (if owned)(Required)
+                2.  Building Blue Print with complete approvals. (Required)
             </Typography>
             <Typography>
-                3.  Sketch and photos of location business (when applicable)
+                3.  Scanned copy of the lead Architect or Enginner assigned in the construction of the building.
             </Typography>
         </DialogContent>
         <DialogActions>

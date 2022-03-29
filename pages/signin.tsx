@@ -124,7 +124,7 @@ function SigninPage() {
     <>
       <Head>
         <title>
-            Signin | Malabon City Online Services
+            Signin | Municipal City Online Services
         </title>
       </Head>
         <Grid container component="main" sx={{ height: '100vh' }} alignItems="center">
@@ -154,7 +154,7 @@ function SigninPage() {
                   </Grid>
                   <Grid item>
                       <Typography variant="h2" color="white">
-                          Malabon City
+                          Municipal City
                       </Typography>
                       <Typography variant="h4" gutterBottom component="div" color="white">
                           Online Services

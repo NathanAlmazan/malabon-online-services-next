@@ -122,7 +122,7 @@ export default function AdminDashboard(props: Props) {
     <>
      <Head>
       <title>
-        Admin Dashboard | Malabon Online Services
+        Admin Dashboard | Municipal Online Services
       </title>
     </Head>
     <Container>

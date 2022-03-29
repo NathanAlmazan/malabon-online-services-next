@@ -51,7 +51,7 @@ export default function PaymentVerifyDialog(props: Props) {
         rejectMessage: remarks
       })
 
-      await apiPostRequest('/payments/reject', body, currentUser?.accessToken);
+      await apiPostRequest('/payments/building/reject', body, currentUser?.accessToken);
       handleClose();
     }
   }

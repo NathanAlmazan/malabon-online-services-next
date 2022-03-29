@@ -205,7 +205,7 @@ export default function AdminAccount() {
     <>
      <Head>
       <title>
-        Manage Accounts | Malabon Online Services
+        Manage Accounts | Municipal Online Services
       </title>
     </Head>
     <Container>

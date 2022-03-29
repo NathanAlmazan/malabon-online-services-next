@@ -256,6 +256,7 @@ export default function BuildingForm(props: Props) {
             engineer: engineer,
             latitude: location.location.lat,
             longitude: location.location.lng,
+            quarterPayment: installment,
             files: buildingFiles
         }
 

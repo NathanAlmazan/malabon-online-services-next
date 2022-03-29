@@ -505,7 +505,7 @@ export default function BusinessRegisterForm(props: Props) {
     <>
         <Head>
             <title>
-                Business Register | Malabon Online Services
+                Business Register | Municipal Online Services
             </title>
         </Head>
         <Container>

@@ -154,7 +154,7 @@ export default function Businessrenewal(props: Props) {
     <>
      <Head>
       <title>
-        Renew Business | Malabon Online Services
+        Renew Business | Municipal Online Services
       </title>
     </Head>
     <Container>

@@ -5,7 +5,7 @@ export default function Copyright() {
         <footer>
             <Typography variant="body2" color="text.secondary" align="center" sx={{ m: 7 }}>
                 {'Copyright © '}
-                CITY GOVERNMENT OF MALABON
+                CITY GOVERNMENT MUNICIPALITY
                 {' '}
                 {new Date().getFullYear()}
                 {'.'}

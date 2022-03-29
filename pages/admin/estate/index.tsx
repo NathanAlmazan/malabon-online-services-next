@@ -89,7 +89,7 @@ export default function RealEstatePage(props: Props) {
     <>
      <Head>
       <title>
-        Real Estate Tax | Malabon Online Services
+        Real Estate Tax | Municipal Online Services
       </title>
     </Head>
     <Container>
