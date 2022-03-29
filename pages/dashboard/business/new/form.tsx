@@ -251,7 +251,19 @@ export default function RegistrationForm({ accessToken, zoning, lineOfBusiness, 
             postalCode: '',
             latitude: zoning.location.lat.toString(), 
             longitude: zoning.location.lng.toString()
-        }))
+        }));
+
+        setMainOffice(state => ({
+            bldgNumber: bldgNumber,
+            street: street,
+            barangay: zoneAddress[1],
+            city: zoneAddress[2],
+            province: zoneAddress[3],
+            mainOffice: true,
+            postalCode: '',
+            latitude: zoning.location.lat.toString(), 
+            longitude: zoning.location.lng.toString()
+        }));
     }, [zoning])
 
     const handleOrgTypeChange = ((event: React.ChangeEvent<HTMLInputElement>, value: string) => {
@@ -346,7 +358,10 @@ export default function RegistrationForm({ accessToken, zoning, lineOfBusiness, 
         if (!oathAgree) return setError("Agree to terms is required.");
         setLoading(true);
         const businessOwner = ownerList.find(owner => owner.owner);
-        if (!businessOwner) return setError("OIC / President is not defined.")
+        if (!businessOwner) {
+            setError("OIC / President is not defined.");
+            setLoading(false);
+        }
 
         let businessFiles: Files[] = [];
         let taxFile = formFiles.taxIncentiveFile;

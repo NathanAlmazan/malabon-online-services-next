@@ -67,7 +67,8 @@ type AdminAccount = {
     firstName: string;
     lastName: string;
     email: string;
-  } 
+  },
+  roles: string[];
 }
 
 type AdminDashboard = {
@@ -207,10 +208,12 @@ export default function AdminDashboard(props: Props) {
             sm={12}
             xs={12}
           >
-            <LatestRequest 
-              forms={adminDashboard.business}
-              viewAll={() => handleRedirect('/admin/business/register')}
-            />
+            {Boolean(account.roles.includes("OLBO") || account.roles.includes("CHO") || account.roles.includes("CENRO") || account.roles.includes("OCMA") || account.roles.includes("BFP") || account.roles.includes("PZO") || account.roles.includes("TRSY") || account.roles.includes("BPLO")) && (
+              <LatestRequest 
+                forms={adminDashboard.business}
+                viewAll={() => handleRedirect('/admin/business/register')}
+              />
+            )}
           </Grid>
           <Grid
             item
@@ -219,10 +222,12 @@ export default function AdminDashboard(props: Props) {
             sm={12}
             xs={12}
           >
-            <RenewRequest 
-              forms={adminDashboard.renew}
-              viewAll={() => handleRedirect('/admin/business/renew')}
-            />
+            {Boolean(account.roles.includes("TRSY")) && (
+              <RenewRequest 
+                forms={adminDashboard.renew}
+                viewAll={() => handleRedirect('/admin/business/renew')}
+              />
+            )}
           </Grid>
           <Grid
             item
@@ -231,10 +236,12 @@ export default function AdminDashboard(props: Props) {
             sm={12}
             xs={12}
           >
-            <BuildingRequest 
-              forms={adminDashboard.building}
-              viewAll={() => handleRedirect('/admin/building')}
-            />
+            {Boolean(account.roles.includes("FENCING") || account.roles.includes("ARCHITECTURAL") || account.roles.includes("STRUCTURAL") || account.roles.includes("ELECTRICAL") || account.roles.includes("BFP") || account.roles.includes("MECHANICAL") || account.roles.includes("TRSY") || account.roles.includes("SANITARY") || account.roles.includes("PLUMBING") || account.roles.includes("INTERIOR") || account.roles.includes("ELECTRONICS")) && (
+              <BuildingRequest 
+                forms={adminDashboard.building}
+                viewAll={() => handleRedirect('/admin/building')}
+              />
+            )}
           </Grid>
           <Grid
             item
@@ -243,10 +250,12 @@ export default function AdminDashboard(props: Props) {
             sm={12}
             xs={12}
           >
-            <RealEstateRequests 
-              forms={adminDashboard.realEstate}
-              viewAll={() => handleRedirect('/admin/estate')}
-            />
+            {Boolean(account.roles.includes("TRSY")) && (
+              <RealEstateRequests 
+                forms={adminDashboard.realEstate}
+                viewAll={() => handleRedirect('/admin/estate')}
+              />
+            )}
           </Grid>
         </Grid>
         <Copyright />

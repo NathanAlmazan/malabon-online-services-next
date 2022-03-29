@@ -348,7 +348,7 @@ export default function UserApplications({ accessToken, applications, renew, bui
                           width={400}
                           height={400}
                       />
-                      <Typography variant="body1" component="h1" align="center" sx={{ maxWidth: 350 }}>
+                      <Typography variant="body1" component="h1" align="center" sx={{ maxWidth: 350, mt: 3 }}>
                           You have no existing request at the moment. Please go to home page and select transaction.
                       </Typography>
                       <Button variant="outlined" startIcon={<DownloadDoneIcon />} sx={{ borderRadius: 50, mt: 3 }} onClick={() => router.push('/dashboard')}>

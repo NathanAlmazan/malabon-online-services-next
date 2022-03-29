@@ -8,6 +8,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import LoadingButton from '@mui/lab/LoadingButton';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import UploadIcon from '@mui/icons-material/Upload';
 import DownloadDoneIcon from '@mui/icons-material/DownloadDone';
@@ -26,6 +27,7 @@ export default function ClaimDialog(props: Props) {
     const { open, handleClose, buildingId } = props;
     const [value, setValue] = React.useState<Date | null>(new Date());
     const [error, setError] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
     const [certificateFile, setCertificateFile] = React.useState<File | null>(null);
     const { currentUser } = useAuth();
 
@@ -43,6 +45,8 @@ export default function ClaimDialog(props: Props) {
         if (value == null) setError(true);
         else if (!certificateFile) setError(true);
         else {
+          setLoading(true);
+
           const certificate = await uploadCertificateToFirebase(certificateFile, certificateFile.name);
             const body = JSON.stringify({
                 buildingId: buildingId,
@@ -51,6 +55,7 @@ export default function ClaimDialog(props: Props) {
             })
 
             await apiPostRequest('/building/appointment', body, currentUser?.accessToken);
+            setLoading(false);
             handleClose();
         }
     }
@@ -91,7 +96,7 @@ export default function ClaimDialog(props: Props) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit}>Submit</Button>
+          <LoadingButton loading={loading} onClick={handleSubmit}>Submit</LoadingButton>
         </DialogActions>
       </Dialog>
   );

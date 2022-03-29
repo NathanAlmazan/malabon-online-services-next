@@ -103,7 +103,7 @@ function Appbar({ matches, open, toggleDrawer }: Props) {
                     })
                 }
 
-                if (building.length > 0 ) {
+                if (building.length > 0) {
                     notificationList.push({
                         notifDesc: `${building.length} building permit applications need approval.`,
                         notifSubject: "Building Permit Applications",

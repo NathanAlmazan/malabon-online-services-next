@@ -9,6 +9,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LoadingButton from '@mui/lab/LoadingButton';
 import UploadIcon from '@mui/icons-material/Upload';
 import DownloadDoneIcon from '@mui/icons-material/DownloadDone';
 import Stack from '@mui/material/Stack';
@@ -27,6 +28,7 @@ export default function ClaimDialog(props: Props) {
     const [value, setValue] = React.useState<Date | null>(new Date());
     const [error, setError] = React.useState(false);
     const [certificateId, setCertificateId] = React.useState("");
+    const [loading, setLoading] = React.useState(false);
     const [certificateFile, setCertificateFile] = React.useState<File | null>(null);
     const { currentUser } = useAuth();
 
@@ -49,6 +51,8 @@ export default function ClaimDialog(props: Props) {
         else if (value == null) setError(true);
         else if (!certificateFile) setError(true);
         else {
+          setLoading(true);
+
           const certificate = await uploadCertificateToFirebase(certificateFile, certificateFile.name);
             const body = JSON.stringify({
                 businessId: businessId,
@@ -58,6 +62,8 @@ export default function ClaimDialog(props: Props) {
             })
 
             await apiPostRequest('/business/new/appointment', body, currentUser?.accessToken);
+
+            setLoading(false);
             handleClose();
         }
     }
@@ -107,7 +113,7 @@ export default function ClaimDialog(props: Props) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit}>Submit</Button>
+          <LoadingButton loading={loading} onClick={handleSubmit}>Submit</LoadingButton>
         </DialogActions>
       </Dialog>
   );
