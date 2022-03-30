@@ -67,9 +67,9 @@ function ContactInformation(props: Props) {
                     <Grid item xs={12} md={6}>
                         <TextField 
                             fullWidth
-                            required
                             name="telephone"
                             label="Telephone"
+                            inputProps={{ maxlength: 12 }}
                             value={telephone ? telephone : ''}
                             onChange={editable ? handleValueChange : undefined}
                         />

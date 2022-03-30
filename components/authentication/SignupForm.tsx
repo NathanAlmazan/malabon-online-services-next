@@ -150,6 +150,7 @@ export default function SignupForm({ email, firstName, lastName, gender, mobile,
             </Grid>
             <Grid item xs={12}>
                 <FormControlLabel
+                    sx={{ mb: 3 }}
                     control={<Checkbox checked={agreeInTerms} onChange={() => setAgreeInTerms(!agreeInTerms)} color="primary" />}
                     label={<p>I agree to the <Link href="/termsAndConditions"><a style={{ color: "#ff558f" }}>Terms and Conditions</a></Link> of Municipal Online Services.</p>}
                 />

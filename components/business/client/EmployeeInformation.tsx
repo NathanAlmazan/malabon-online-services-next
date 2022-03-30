@@ -32,7 +32,7 @@ function EmployeeInformation(props: Props) {
         <Grid container spacing={3} alignItems="start" sx={{ p: 3 }}>
             <Grid item xs={12} md={4}>
                 <Typography component="h1" variant="body1" textAlign="left">
-                    EMPLOYEES INFORMATION
+                    NUMBER OF EMPLOYEES
                 </Typography>
             </Grid>
             <Grid item xs={12} md={8}>
@@ -75,7 +75,7 @@ function EmployeeInformation(props: Props) {
                             fullWidth
                             required
                             name="lguEmployees"
-                            label="Employees residing in Malabon"
+                            label="Employees residing in Municipal"
                             type="number"
                             value={lguEmployees ? lguEmployees : ''}
                             onChange={editable ? handleValueChange : undefined}

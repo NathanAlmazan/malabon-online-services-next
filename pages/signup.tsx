@@ -189,7 +189,7 @@ function SignupPage() {
                   exit={{ opacity: 0, x: -100 }}
                   >
                   
-                    <Typography component="h1" variant="h5" color="primary" sx={{ width: '100%', pb: 5 }}>
+                    <Typography component="h1" variant="h5" color="primary" sx={{ width: '100%', pb: 3 }}>
                       <strong>Sign Up</strong>
                     </Typography>
                     <AuthSocial

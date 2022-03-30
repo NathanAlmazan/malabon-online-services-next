@@ -17,11 +17,6 @@ export const UserSideBar = [
         path: '/dashboard/inbox',
         title: 'Inbox',
         icon: <InboxIcon />
-    },
-    {
-        path: '/help',
-        title: 'Help and Support',
-        icon: <HelpIcon />
     }
 ];
 
@@ -57,7 +52,7 @@ export const AdminSidebar = [
         icon: <GroupIcon />
     },
     {
-        path: '/help',
+        path: '/',
         title: 'Help and Support',
         icon: <HelpIcon />
     }

@@ -8,6 +8,7 @@ import { CacheProvider, EmotionCache } from '@emotion/react';
 import createCache from '@emotion/cache';
 import themes from '../themes';
 import dynamic from 'next/dynamic';
+import "../styles/globals.css";
 
 const Layout = dynamic(() => import("../layout"));
 const FirebaseProvider = dynamic(() => import("../hocs/FirebaseProvider"));

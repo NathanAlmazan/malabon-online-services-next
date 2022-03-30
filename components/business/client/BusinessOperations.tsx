@@ -31,9 +31,12 @@ function BusinessOperations(props: Props) {
                             fullWidth
                             required
                             name="businessArea"
-                            label="Business Area"
+                            label="Business Area in SQM"
                             type="number"
                             value={businessArea ? businessArea : ''}
+                            InputProps={{
+                                endAdornment: <InputAdornment position="end">sqm</InputAdornment>
+                            }}
                             onChange={editable ? handleValueChange : undefined}
                         />
                     </Grid>

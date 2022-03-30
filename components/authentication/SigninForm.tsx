@@ -73,7 +73,7 @@ export default function SigninForm({ email, password, error, handleText, handleS
 
         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
           <Link variant="subtitle2" href="/signup">
-            {"Don't have account? Signup"}
+            {"Don't have account?"}
           </Link>
 
           <Link variant="subtitle2" href="/password/reset">

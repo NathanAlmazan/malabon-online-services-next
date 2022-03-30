@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import { AdminSidebar, UserSideBar } from './SidebarConfig';
 import { useAuth } from '../hocs/FirebaseProvider';
 import { apiGetRequest } from '../hocs/axiosRequests';
+import HelpIcon from '@mui/icons-material/Help';
 
 type AdminAccount = {
     adminAccount: {
@@ -79,7 +80,8 @@ function Sidebar() {
   return (
     <div>
         {router.pathname.search("/admin") == -1 ? (
-            UserSideBar.map(data => {
+            <>
+            {UserSideBar.map(data => {
                 const isSelected = Boolean(router.pathname == data.path);
 
                 return (
@@ -101,7 +103,20 @@ function Sidebar() {
                         }} />
                     </ListItem>
                 )
-            })
+            })}
+                <ListItem button component="a" 
+                    href="#helpSupport"
+                >
+                <ListItemIcon sx={{ 
+                    color: theme.palette.primary.dark
+                }}>
+                    <HelpIcon />
+                </ListItemIcon>
+                <ListItemText primary="Help and Support" sx={{ 
+                    color: theme.palette.primary.dark
+                }} />
+            </ListItem>
+            </>
         ) : (
             adminPaths.map(data => {
                 const isSelected = Boolean(router.pathname == data.path);

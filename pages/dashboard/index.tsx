@@ -20,6 +20,11 @@ import RestorePageIcon from '@mui/icons-material/RestorePage';
 import LandscapeIcon from '@mui/icons-material/Landscape';
 
 const ServiceCard = dynamic(() => import('../../components/dashboard/ServiceCard'));
+const AppFooter = dynamic(() => import('../../components/dashboard/homePage/AppFooter'));
+const HomeBanner = dynamic(() => import('../../components/dashboard/homePage/HeroBanner'));
+const CustomTypography = dynamic(() => import('../../components/dashboard/homePage/Typography'));
+const ShowProcess = dynamic(() => import('../../components/dashboard/homePage/ShowProcess'));
+const AskHelp = dynamic(() => import('../../components/dashboard/homePage/AskHelp'));
 const NewBusinessDialog = dynamic(() => import('../../components/dashboard/newBusinessDialog'));
 const BuildingPermitDialog = dynamic(() => import('../../components/dashboard/BuildingDialog'));
 const RenewalDialog = dynamic(() => import('../../components/dashboard/renewalDialog'));
@@ -30,43 +35,29 @@ const RealEstatePayDialog = dynamic(() => import('../../components/realEstate/re
 const malabonServices = [
   {
       icon: <AddBusinessIcon sx={{ width: 80, height: 80 }} color="secondary" />,
-      title: 'Online New Business Registration',
+      title: 'New Business Registration',
       description: 'Register your new business online and receive your business permit in just 5 steps.',
       applyLink: '/dashboard/business/new/zoning'
   },
   {
       icon: <RestorePageIcon sx={{ width: 80, height: 80 }} color="secondary" />,
-      title: 'Online Renewal of Business Permit',
+      title: 'Renewal of Business Permit',
       description: 'Renew your business permit online anytime and anywhere in just 4 steps.',
       applyLink: '/business/renew'
   },
   {
       icon: <CorporateFareIcon sx={{ width: 80, height: 80 }} color="secondary" />,
-      title: 'Online Building Permit Registration',
+      title: 'Building Permit Registration',
       description: 'Register your new facility online and receive your business permit in just 5 steps.',
       applyLink: '/building/register'
   },
   {
     icon: <LandscapeIcon sx={{ width: 80, height: 80 }} color="secondary" />,
-    title: 'Online Real State Tax Payment',
+    title: 'Real State Tax Payment',
     description: 'Process and pay your annual real estate tax online in just 4 simple steps.',
     applyLink: '/estate/register'
   } 
 ];
-
-function Copyright() {
-  return (
-    <footer>
-      <Typography variant="body2" color="text.secondary" align="center" sx={{ m: 7 }}>
-          {'Copyright © '}
-          CITY GOVERNMENT OF MALABON
-          {' '}
-          {new Date().getFullYear()}
-          {'.'}
-      </Typography>
-  </footer>
-  );
-}
 
 interface Props {
   ownedBusinesses: BusinessRegistry[];
@@ -133,56 +124,12 @@ export default function Dashboard(props: Props) {
               Home | Municipal City Online Services
           </title>
         </Head>
-        <Box sx={{
-          display: 'flex',
-          alignItems: 'end',
-          justifyContent: { xs: 'center', md: 'space-between' },
-          wisth: '100vw',
-          height: 450,
-          backgroundImage: 'url("/covers/city_hall.png")',
-          backgroundRepeat: 'no-repeat',
-          background: 'linear-gradient(0deg, rgba(255, 0, 150, ), rgba(255, 0, 150, 0.5))',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed'
-        }}>
-            <Box sx={{ p: { xs: 6.5, sm: 3, lg: 16 }}}>
-                <Typography
-                  color="primary"
-                  mb={1}
-                  sx={{
-                    fontWeight: "bold",
-                    textAlign: { xs: "center", sm: "left" },
-                    fontSize: { xs: "1.8em", sm: "2em", lg: "2.5em" },
-                    maxWidth: "20ch"
-                  }}
-                >
-                  Welcome to Municipal Online Services
-                </Typography>
-                <Typography
-                  color="secondary.dark"
-                  mb={{ xs: 15, md: 10 }}
-                  sx={{
-                    fontWeight: "bold",
-                    textAlign: 'center',
-                    fontSize: { xs: "1.7em", sm: "2em", lg: "1.5em" },
-                    maxWidth: "20ch"
-                  }}
-                >
-                 Fast Convenient Secure
-                </Typography>
-              </Box>
-              <Avatar
-                sx={style}
-                alt="people"
-                src="https://www.bdo.com.ph/sites/default/files/images/Body%20-%20Article%20=%20How%20to%20invest%20in%20the%20Philippine%20Stock%20Market%20-%20Location%20=%20above%20How%20to%20make%20money%20investing%20in%20the%20stock%20ma.jpg"
-              />
-          </Box>
-        <Container maxWidth="lg">
-          <Box sx={{ mt: 5, mb: 5 }}>
-            <Typography component="p" variant="h5" textAlign="center" sx={{ color: theme.palette.primary.dark }}>
-              How can we help you today, <strong style={{ color: theme.palette.primary.main }}>{account && capitalCase(account.account.firstName + ' ' + account.account.lastName)}</strong>?
-            </Typography>
+        <HomeBanner />
+        <Container id="municipal-services" className="municipal-services" maxWidth="lg">
+          <Box sx={{ pt: 10, mb: 5 }}>
+            <CustomTypography color="inherit" align="center" variant="h4" marked="center">
+              Municipal Services
+            </CustomTypography>
           </Box>
           <Grid container spacing={2}>
               {malabonServices.map(service => (
@@ -192,13 +139,15 @@ export default function Dashboard(props: Props) {
               ))}
           </Grid>
         </Container>
+        <ShowProcess />
+        <AskHelp />
         <NewBusinessDialog open={openNewBusiness} handleClose={() => setOpenNewBusiness(false)} proceed={proceedToPage} />
         <BuildingPermitDialog open={openBuilding} handleClose={() => setOpenBuilding(false)} proceed={proceedToPage}/>
         <RenewalDialog open={openRenewal} handleClose={() => setOpenrenewal(false)} proceed={proceedRenew} />
         <RealEstateDialog open={openRealEstate} handleClose={() => setOpenRealEstate(false)} proceed={proceedRealEstate} />
         <BusinessRenewDialog open={renewDialog} handleClose={() => setrenewDialog(false)} businesses={ownedBusinesses} accessToken={accessToken} uid={account.account.uid} />
         <RealEstatePayDialog open={realDialog} handleClose={() => setRealDialog(false)} accessToken={accessToken} uid={account.account.uid} />
-        <Copyright />
+        <AppFooter />
       </>
   );
 }
