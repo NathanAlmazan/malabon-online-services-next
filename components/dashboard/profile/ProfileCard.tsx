@@ -64,21 +64,14 @@ export default function ProfileCard(props: any) {
           </Badge>
 
           {/* DESCRIPTION */}
-          <Typography variant="h6">{props.name}</Typography>
-          <Typography color="text.secondary">{props.sub}</Typography>
+          
         </Grid>
         {/* CARD HEADER END *}
 
         {/* BUTTON */}
-        <Grid item style={styles.details} sx={{ width: "100%" }}>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => handleProfile()}
-            sx={{ width: "99%", p: 1, my: 2 }}
-          >
-            View Public Profile
-          </Button>
+        <Grid item style={styles.details} sx={{ width: "100%", pb: 2 }}>
+          <Typography variant="h5" align="center">{props.name}</Typography>
+          <Typography color="text.secondary" align="center">{props.sub}</Typography>
         </Grid>
       </Grid>
     </Card>

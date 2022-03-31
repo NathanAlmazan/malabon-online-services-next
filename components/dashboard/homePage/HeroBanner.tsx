@@ -52,13 +52,13 @@ export default function HeroBanner() {
         alt="increase priority"
       />
       <Typography color="inherit" align="center" variant="h2" marked="center">
-        Municiapal Online Services
+        Municipal Online Services
       </Typography>
       <Typography
         color="inherit"
         align="center"
         variant="h5"
-        sx={{ mb: 4, mt: { sx: 4, sm: 10 } }}
+        sx={{ mb: 4, mt: { xs: 5, md: 10 } }}
       >
         Secure, Fast and Convinient way to process your permits
       </Typography>
@@ -72,9 +72,6 @@ export default function HeroBanner() {
       >
         Start
       </Button>
-      <Typography variant="body2" color="inherit" sx={{ mt: 2 }}>
-        View Services
-      </Typography>
     </ProductHeroLayout>
   );
 }
