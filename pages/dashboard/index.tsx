@@ -92,11 +92,11 @@ export default function Dashboard(props: Props) {
   const [realDialog, setRealDialog] = useState<boolean>(false);
 
   const openDialog = (dialog: string) => {
-    if (dialog == "Online New Business Registration") {
+    if (dialog == "New Business Registration") {
       setOpenNewBusiness(true);
-    } else if (dialog == "Online Renewal of Business Permit") {
+    } else if (dialog == "Renewal of Business Permit") {
       setOpenrenewal(true);
-    } else if (dialog == "Online Real State Tax Payment") {
+    } else if (dialog == "Real State Tax Payment") {
       setOpenRealEstate(true);
     } else {
       setOpenBuilding(true);
