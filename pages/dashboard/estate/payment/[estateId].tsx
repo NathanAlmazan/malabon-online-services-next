@@ -259,7 +259,7 @@ export default function RegistrationPayment(props: Props) {
                                 <Button fullWidth size="large" color="secondary" variant={paymentMode == "Bank Deposit" ? "contained" : "outlined"} onClick={() => setPaymentMode("Bank Deposit")}>
                                     <AccountBalanceIcon />
                                 </Button>
-                                <Button fullWidth size="large" color="secondary" variant={paymentMode == "Cash" ? "contained" : "outlined"} onClick={() => setPaymentMode("Cash")}>
+                                <Button fullWidth size="large" color="secondary" variant={paymentMode == "Cashier" ? "contained" : "outlined"} onClick={() => setPaymentMode("Cashier")}>
                                     <PaymentsIcon />
                                 </Button>
                                 <Button fullWidth size="large" color="secondary" variant={paymentMode == "Paypal" ? "contained" : "outlined"} onClick={() => setPaymentMode("Paypal")}>
@@ -288,7 +288,7 @@ export default function RegistrationPayment(props: Props) {
                                         />
                                     </motion.div>
                                 ): (
-                                  paymentMode == "Cash" ? (
+                                  paymentMode == "Cashier" ? (
                                     <motion.div
                                           key="cash"
                                           initial={{ opacity: 0, x: 100 }}

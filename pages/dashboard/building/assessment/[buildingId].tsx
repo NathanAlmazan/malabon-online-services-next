@@ -75,14 +75,14 @@ export default function AsessmentPage(props: Props) {
                                 align="center"
                                 sx={{ maxWidth: 300, fontSize: 14 }}
                               >
-                                Your building application is currently being reviewed. You can vew the status of your application in this page. Thank you!
+                                Your building application is currently being reviewed. You can view the status of your application in this page. Thank you!
                             </Typography>
                           </Stack>
                         </Box>
                     </Grid>
                     <Grid item sm={12} md={7}>
                         <Paper elevation={18} sx={{ p: { xs: 3, md: 4 }, mt: 4 }}>
-                            <AssessmentProgress approvals={form.approvals} buildingId={buildingId} />
+                            <AssessmentProgress approvals={form.approvals} buildingId={buildingId} topFile={Boolean(!form.topFile)} />
                         </Paper>
                     </Grid>
                 </Grid>

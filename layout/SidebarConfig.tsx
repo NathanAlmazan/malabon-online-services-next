@@ -1,6 +1,7 @@
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import InboxIcon from '@mui/icons-material/Inbox';
 import HelpIcon from '@mui/icons-material/Help';
+import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import BusinessIcon from '@mui/icons-material/Business';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
 import LandscapeIcon from '@mui/icons-material/Landscape';
@@ -52,8 +53,8 @@ export const AdminSidebar = [
         icon: <GroupIcon />
     },
     {
-        path: '/',
-        title: 'Help and Support',
-        icon: <HelpIcon />
+        path: '/admin/zones',
+        title: 'Zone Classifications',
+        icon: <AddLocationAltIcon />
     }
 ]

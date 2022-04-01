@@ -60,7 +60,7 @@ export default function HeroBanner() {
         variant="h5"
         sx={{ mb: 4, mt: { xs: 5, md: 10 } }}
       >
-        Secure, Fast and Convinient way to process your permits
+        Secure, Fast and Convenient way to process your permits
       </Typography>
       <Button
         color="primary"

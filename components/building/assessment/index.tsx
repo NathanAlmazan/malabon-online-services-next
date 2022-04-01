@@ -177,10 +177,11 @@ interface Props {
     approvals: BuildingApproval[];
     buildingId: number;
     inbox?: boolean;
+    topFile: boolean;
 }
 
 export default function VerticalLinearStepper(props: Props) {
-  const { approvals, buildingId, inbox } = props; 
+  const { approvals, buildingId, inbox, topFile } = props; 
   const router = useRouter();
   const [activeStep, setActiveStep] = React.useState(approvals.length - 1);
   const [emptyStep, setEmptyStep] = React.useState<string[]>([]);
@@ -296,7 +297,7 @@ export default function VerticalLinearStepper(props: Props) {
                     <Typography variant="subtitle1">
                         <strong style={{ color: '#E91E63', fontSize: 20 }}>Congratulations!</strong> Your building application was approved by all of the departments. You can now proceed to the payment of tax.
                     </Typography>
-                    <Button onClick={() => handleRedirect(inbox ? '/dashboard/building/assessment/' + buildingId : '/dashboard/building/payment/' + buildingId)} variant="contained" endIcon={<ArrowForwardIcon />}>
+                    <Button onClick={() => handleRedirect(inbox ? '/dashboard/building/assessment/' + buildingId : '/dashboard/building/payment/' + buildingId)} variant="contained" disabled={topFile} endIcon={<ArrowForwardIcon />}>
                         Proceed
                     </Button>
                 </Stack>

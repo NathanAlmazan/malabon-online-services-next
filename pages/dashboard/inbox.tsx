@@ -328,7 +328,7 @@ export default function UserApplications({ accessToken, applications, renew, bui
                             </Button>
                           </Box>
                         ) : (
-                          <AssessmentProgress approvals={selectedBusiness.approvals} businessId={selectedBusiness.businessId} inbox={true} /> 
+                          <AssessmentProgress approvals={selectedBusiness.approvals} businessId={selectedBusiness.businessId} inbox={true} topFile={Boolean(selectedBusiness.payments.length == 0)} /> 
                         )}
                       </Grid>
                     </Grid>
@@ -477,7 +477,7 @@ export default function UserApplications({ accessToken, applications, renew, bui
                             </Button>
                           </Box>
                         ) : (
-                          <BuildingAssessment approvals={selectedBuilding.approvals} buildingId={selectedBuilding.buildingId} inbox={true} /> 
+                          <BuildingAssessment approvals={selectedBuilding.approvals} buildingId={selectedBuilding.buildingId} inbox={true} topFile={Boolean(!selectedBuilding.topFile)} /> 
                         )}
                       </Grid>
                     </Grid>

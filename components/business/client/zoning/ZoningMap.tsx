@@ -10,6 +10,7 @@ interface Props {
     loadError: Error | undefined;
     location: Location;
     onMapLoad: (map: google.maps.Map) => void;
+    setLocation: (lat: number, lng: number) => void;
 }
 
 const mapStyle = {
@@ -27,7 +28,13 @@ const options = {
     zoomControl: true,
 }
 
-function ZoningMap({ isLoaded, loadError, location, onMapLoad }: Props) {
+function ZoningMap({ isLoaded, loadError, location, onMapLoad, setLocation }: Props) {
+
+    const handleMapClick = ((event: google.maps.MapMouseEvent) => {
+        if (event.latLng) {
+         setLocation(event.latLng.lat(), event.latLng.lng());
+        }
+     })
 
     if (!isLoaded) return <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", height: "100%" }}><CircularProgress /></Box>;
     if (loadError) return <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", height: "100%" }}><ErrorIcon fontSize='large' /></Box>;
@@ -37,6 +44,7 @@ function ZoningMap({ isLoaded, loadError, location, onMapLoad }: Props) {
         mapContainerStyle={mapStyle}
         zoom={18}
         center={centerLocation}
+        onClick={handleMapClick}
         options={options}
         onLoad={onMapLoad}
       >

@@ -11,9 +11,10 @@ interface Props {
   }) => void;
   setLocation: (location: Location) => void;
   error: string | null;
+  clickedLocation: string | null;
 }
 
-export default function ZoningToolbar({ panTo, setLocation, error }: Props) {
+export default function ZoningToolbar({ panTo, setLocation, error, clickedLocation }: Props) {
   const [filteredData, setFilteredData] = useState<google.maps.places.AutocompletePrediction[]>([]);
   const {
       ready,
@@ -33,6 +34,12 @@ export default function ZoningToolbar({ panTo, setLocation, error }: Props) {
           radius: 100 * 1000
       }
   });
+
+  useEffect(() => {
+    if (clickedLocation) {
+      setValue(clickedLocation);
+    }
+  }, [clickedLocation, setValue])
 
   useEffect(() => {
     if (status == "OK") {

@@ -107,6 +107,7 @@ export type SubmittedForm = {
     province: string;
     postalCode: number;
     scopeOfWork: string;
+    topFile?: string | null;
     buildingUse: string;
     engineer: string;
     latitude?: string;

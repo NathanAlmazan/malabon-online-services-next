@@ -3,7 +3,12 @@ import { GoogleMap, Marker } from '@react-google-maps/api';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import ErrorIcon from '@mui/icons-material/Error';
-import { Location } from './index';
+
+interface Location {
+    lat: number;
+    lng: number;
+    address: string;
+}
 
 interface Props {
     isLoaded: boolean;
@@ -31,10 +36,10 @@ const options = {
 function ZoningMap({ isLoaded, loadError, location, onMapLoad, setLocation }: Props) {
 
     const handleMapClick = ((event: google.maps.MapMouseEvent) => {
-        if (event.latLng) {
-         setLocation(event.latLng.lat(), event.latLng.lng());
-        }
-     })
+       if (event.latLng) {
+        setLocation(event.latLng.lat(), event.latLng.lng());
+       }
+    })
 
     if (!isLoaded) return <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", height: "100%" }}><CircularProgress /></Box>;
     if (loadError) return <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: "100%", height: "100%" }}><ErrorIcon fontSize='large' /></Box>;

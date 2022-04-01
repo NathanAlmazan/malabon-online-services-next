@@ -9,6 +9,7 @@ import Box from '@mui/material/Box';
 import { useLoadScript } from '@react-google-maps/api';
 import { Button, Chip, Divider } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import Geocode from "react-geocode";
 import { constantCase } from 'change-case';
 import { apiPostRequest } from '../../../../hocs/axiosRequests';
 
@@ -71,6 +72,7 @@ function ZoningPage({ mapsKey, accessToken, onSubmit }: Props) {
     const matches = useMediaQuery(theme.breakpoints.down('sm'));
     const [collapse, setCollapse] = useState<boolean>(false);
     const [businessZone, setBusinessZone] = useState<string | null>('');
+    const [clickedLocation, setClickedLocation] = useState<string | null>(null);
 
     const [currentLocation, setCurrentLocation] = useState<Location>({
         lat: 14.657868,
@@ -159,6 +161,21 @@ function ZoningPage({ mapsKey, accessToken, onSubmit }: Props) {
         }
     }
 
+    const handleMapClick = async (lat: number, lng: number) => {
+        Geocode.setApiKey("AIzaSyBampCnnbMpDkGIkQmZRGjU8YFARfo13Ns");
+        Geocode.setLanguage("en");
+        Geocode.fromLatLng(lat.toString(), lng.toString()).then(
+            (response) => {
+                const result = response.results[0].formatted_address;
+                setCurrentLocation(state => ({ lat: lat, lng: lng, address: result }));
+                setClickedLocation(result);
+            },
+                (error) => {
+                    console.error(error);
+                }
+            );
+    }
+
   return (
     <>
         <Typography 
@@ -180,6 +197,7 @@ function ZoningPage({ mapsKey, accessToken, onSubmit }: Props) {
                 panTo={panTo} 
                 setLocation={(location) => handleLocationChange(location)}
                 error={addressError}
+                clickedLocation={clickedLocation}
             />
         )}
 
@@ -189,6 +207,7 @@ function ZoningPage({ mapsKey, accessToken, onSubmit }: Props) {
                 loadError={loadError}
                 location={currentLocation}
                 onMapLoad={onMapLoad}
+                setLocation={handleMapClick}
             />
         </Box>
 
