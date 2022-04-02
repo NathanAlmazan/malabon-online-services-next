@@ -54,7 +54,7 @@ export const AdminSidebar = [
     },
     {
         path: '/admin/zones',
-        title: 'Zone Classifications',
+        title: 'Manage Zoning',
         icon: <AddLocationAltIcon />
     }
 ]

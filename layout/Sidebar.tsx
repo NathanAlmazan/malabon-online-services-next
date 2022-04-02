@@ -60,7 +60,7 @@ function Sidebar() {
                         adminList.push(AdminSidebar.find(bar => bar.title == "Real Estate") as Sidebar);
                     }
 
-                    adminList.push(AdminSidebar.find(bar => bar.title == "Help and Support") as Sidebar);
+                    adminList.push(AdminSidebar.find(bar => bar.title == "Manage Zoning") as Sidebar);
                     
                     setAdminPaths(adminList);
                 }
