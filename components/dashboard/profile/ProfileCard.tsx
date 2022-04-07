@@ -5,7 +5,6 @@ import { Grid } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import Badge from "@mui/material/Badge";
-import Button from "@mui/material/Button";
 import { useAuth } from "../../../hocs/FirebaseProvider";
 
 // STYLES

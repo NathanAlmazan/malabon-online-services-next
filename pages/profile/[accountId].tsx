@@ -69,6 +69,7 @@ export default function AccountProfile(props: Props) {
                         position: "absolute",
                         maxWidth: '95vw',
                         top: "20vh",
+                        left: { xs: 20, sm: "auto" },
                         px: { xs: 0, md: 7 }
                     }}
                 >
