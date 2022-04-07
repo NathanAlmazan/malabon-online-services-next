@@ -90,7 +90,7 @@ export default function SettingsCard(props: Props) {
     );
 
   return (
-    <Card variant="outlined" sx={{ height: "100%", width: "100%" }}>
+    <Card variant="outlined" sx={{ height: "100%", width: "100%", textAlign: "center" }}>
       <Typography variant="h4" sx={{ p: 2 }}>
         My Profile
       </Typography>
@@ -142,7 +142,7 @@ export default function SettingsCard(props: Props) {
               </Grid>
 
               {/* ROW 2: GENDER */}
-              <Grid item xs={6}>
+              <Grid item xs={6} sx={{margin: "auto"}}>
                 <RadioGroup
                     row
                     name="gender"
