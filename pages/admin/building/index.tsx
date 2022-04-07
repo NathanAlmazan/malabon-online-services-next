@@ -84,8 +84,6 @@ export default function BuildingPermit(props: Props) {
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
-
-  console.log(buildingForms.paymentForms);
     
   return (
     <>

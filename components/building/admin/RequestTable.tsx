@@ -45,7 +45,7 @@ const RequestListResults = (props: Props) => {
   const [updatedForms, setUpdatedForms] = useState(forms);
 
   useEffect(() => {
-    setUpdatedForms(state => forms.filter(form => form.buildingId.toString().includes(searchValue)));
+    setUpdatedForms(state => forms.filter(form => form.buildingId.toString().search(searchValue)));
   }, [forms, searchValue]);
 
   const handleLimitChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
