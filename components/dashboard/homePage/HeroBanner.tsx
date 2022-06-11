@@ -6,7 +6,7 @@ import ProductHeroLayout from "./ProductHeroLayout";
 import Box from '@mui/material/Box';
 
 const backgroundImage =
-  '/covers/city_hall.png';
+  '/covers/cityHall.jpg';
 
   const ButtonRoot = styled(MuiButton)(({ theme, size }) => ({
     borderRadius: 0,

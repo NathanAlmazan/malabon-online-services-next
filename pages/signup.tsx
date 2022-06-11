@@ -151,7 +151,7 @@ function SignupPage() {
             sm={4}
             md={7}
             sx={{
-              backgroundImage: 'url("/covers/city_hall.png")',
+              backgroundImage: 'url("/covers/homeCover.jpg")',
               backgroundRepeat: 'no-repeat',
               backgroundColor: 'linear-gradient(0deg, rgba(255, 0, 150, 0.3), rgba(255, 0, 150, 0.3))',
               backgroundSize: 'cover',

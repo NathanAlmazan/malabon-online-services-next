@@ -18,7 +18,7 @@ function Copyright(props: any) {
     return (
       <Typography variant="body2" color="text.secondary" align="center" {...props}>
         {'Copyright © '}
-          CITY GOVERNMENT OF MALABON
+          CITY GOVERNMENT MUNICIPALITY
         {' '}
         {new Date().getFullYear()}
         {'.'}
