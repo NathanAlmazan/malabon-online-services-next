@@ -31,7 +31,6 @@ function ZoningBusiness({ businessTypes, selectedBusiness, error, onSelect }: Pr
         }
     }, [searchQuery, businessTypes])
 
-    console.log(businessTypes.length);
   return (
       <Box>
            <Box sx={{ width: { xs: '100%', sm: 400, md: 500 }, mb: 2 }}>
@@ -73,7 +72,7 @@ function ZoningBusiness({ businessTypes, selectedBusiness, error, onSelect }: Pr
                                         { p: 2, backgroundColor: theme.palette.primary.main, color: '#FFFF', cursor: "pointer" } :
                                         { p: 2, border: `1px solid ${theme.palette.primary.light}`, cursor: "pointer" }}
                                 >
-                                    {capitalCase(businessType.typeName)}
+                                    {`${capitalCase(businessType.typeName)} ${businessType.approved ? "*" : ""}`}
                                 </Paper>
                             </motion.div>
                         </Grid>

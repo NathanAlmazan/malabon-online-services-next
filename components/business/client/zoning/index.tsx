@@ -109,10 +109,22 @@ function ZoningPage({ mapsKey, accessToken, onSubmit }: Props) {
             if (result.status < 300) {
                 const businessTypes: BusinessTypes[] = (result.data as ZoningResult).businessTypes;
 
+                console.log(result.data)
+
                 setBusinessZone(state => (result.data as ZoningResult).zone ? (result.data as ZoningResult).zone.zoneBase : null);
                 setCollapse(state => true);
 
-                setBusinessTypes(state => businessTypes);
+                let finalTypes: BusinessTypes[] = [];
+
+                businessTypes.forEach(type => {
+                    const typeIndex = finalTypes.findIndex(t => t.typeName === type.typeName);
+                    if (typeIndex === -1) finalTypes.push(type);
+                    else {
+                        finalTypes[typeIndex].approved = Boolean(type.approved || finalTypes[typeIndex].approved);
+                    }
+                })
+
+                setBusinessTypes(state => finalTypes);
             } else {
                 setCollapse(state => false);
             }

@@ -227,6 +227,8 @@ export default function RegistrationForm({ accessToken, zoning, lineOfBusiness, 
     const [loadingForm, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
+    console.log(formFiles)
+
     useEffect(() => {
         const zoneAddress = zoning.location.address.split(', ');
         const slicedDetails = zoneAddress[0].split(" ");
@@ -389,10 +391,11 @@ export default function RegistrationForm({ accessToken, zoning, lineOfBusiness, 
             businessFiles.push(zoneFile);
         }
 
-        formFiles.otherFiles.forEach(async (file) => {
-            file.fileURL = await uploadFileToFirebase(account.account.uid, file.fileData as File, file.fileName );
-            businessFiles.push(file);
-        })
+        for (let i = 0; i < formFiles.otherFiles.length; i++) {
+            const currentFile = formFiles.otherFiles[i];
+            currentFile.fileURL = await uploadFileToFirebase(account.account.uid, currentFile.fileData as File, currentFile.fileName );
+            businessFiles.push(currentFile);
+        }
 
         const registrationData: RegisterFormInterface = {
             registrationNumber: businessInfo.registrationNumber as string,

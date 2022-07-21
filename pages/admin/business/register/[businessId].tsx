@@ -314,6 +314,8 @@ export default function BusinessRegisterForm(props: Props) {
         if (mainOffice) setMainOffice(state => mainOffice);
         if (businessAddress) setBusinessAddress(state => businessAddress);
 
+        console.log(form)
+
         setBusinessInfo(state => initialBusinessData);
         setOwnerList(state => form.owners);
         setBusinessServices(state => form.services);
