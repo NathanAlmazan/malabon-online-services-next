@@ -297,7 +297,7 @@ export default function VerticalLinearStepper(props: Props) {
                     <Typography variant="subtitle1">
                         <strong style={{ color: '#E91E63', fontSize: 20 }}>Congratulations!</strong> Your building application was approved by all of the departments. You can now proceed to the payment of tax.
                     </Typography>
-                    <Button onClick={() => handleRedirect(inbox ? '/dashboard/building/assessment/' + buildingId : '/dashboard/building/payment/' + buildingId)} variant="contained" disabled={topFile} endIcon={<ArrowForwardIcon />}>
+                    <Button onClick={() => handleRedirect(inbox ? '/dashboard/building/assessment/' + buildingId : '/dashboard/building/payment/' + buildingId)} variant="contained" endIcon={<ArrowForwardIcon />}>
                         Proceed
                     </Button>
                 </Stack>
